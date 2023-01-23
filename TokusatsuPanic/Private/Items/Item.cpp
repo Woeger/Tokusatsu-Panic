@@ -2,6 +2,8 @@
 
 
 #include "Items/Item.h"
+#include "DrawDebugHelpers.h"
+#include "TokusatsuPanic/TokusatsuPanic.h"
 
 // Sets default values
 AItem::AItem()
@@ -22,6 +24,13 @@ void AItem::BeginPlay()
 	{
 		GEngine->AddOnScreenDebugMessage(1, 60.f, FColor::Cyan, FString("Item OnScreen Message!"));
 	}
+
+	UWorld* World = GetWorld();
+
+	FVector Location = GetActorLocation();
+	DRAW_SPHERE(Location);
+
+	
 	
 }
 
@@ -34,8 +43,11 @@ void AItem::Tick(float DeltaTime)
 
 	if (GEngine)
 	{
-		FString Message = FString::Printf(TEXT("DeltaTime: %f"), DeltaTime);
+		FString Name = GetName();
+		FString Message = FString::Printf(TEXT("Item Name: %s"), *Name);
 		GEngine->AddOnScreenDebugMessage(1, 60.f, FColor::Cyan, Message);
+
+		UE_LOG(LogTemp, Warning, TEXT("Item Name: %s"), *Name);
 	}
 
 }
