@@ -2,8 +2,7 @@
 
 
 #include "Items/Item.h"
-#include "DrawDebugHelpers.h"
-#include "TokusatsuPanic/TokusatsuPanic.h"
+#include "TokusatsuPanic/DebugMacro.h"
 
 // Sets default values
 AItem::AItem()
