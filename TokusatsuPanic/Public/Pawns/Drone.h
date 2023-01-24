@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "Drone.generated.h"
 
+class UCapsuleComponent;
+
 UCLASS()
 class TOKUSATSUPANIC_API ADrone : public APawn
 {
@@ -24,4 +26,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	UCapsuleComponent* Capsule;
 };
