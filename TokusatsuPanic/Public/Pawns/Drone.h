@@ -7,6 +7,7 @@
 #include "Drone.generated.h"
 
 class UCapsuleComponent;
+class USkeletalMeshComponent;
 
 UCLASS()
 class TOKUSATSUPANIC_API ADrone : public APawn
@@ -30,4 +31,7 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* Capsule;
+
+	UPROPERTY(VisibleAnywhere)
+	USkeletalMeshComponent* DroneMesh;
 };

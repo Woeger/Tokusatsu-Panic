@@ -3,6 +3,7 @@
 
 #include "Pawns/Drone.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 ADrone::ADrone()
@@ -13,6 +14,9 @@ ADrone::ADrone()
 	Capsule->SetCapsuleHalfHeight(20.f);
 	Capsule->SetCapsuleRadius(15.f);
 	SetRootComponent(Capsule);
+
+	DroneMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("DroneMesh"));
+	DroneMesh->SetupAttachment(Capsule);
 
 }
 
