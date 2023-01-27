@@ -8,6 +8,8 @@
 
 class UCapsuleComponent;
 class USkeletalMeshComponent;
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class TOKUSATSUPANIC_API ADrone : public APawn
@@ -28,10 +30,18 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void MoveForward(float Value);
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* Capsule;
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* DroneMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* SpringArm;
+
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* CameraComponent;
 };
