@@ -29,13 +29,14 @@ protected:
 	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
+	void Strafe(float Value);
 	void TurnYaw(float Value);
 	void TurnPitch(float Value);
 
 private:
 
 	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArm;
+	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
