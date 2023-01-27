@@ -31,6 +31,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
+	void TurnYaw(float Value);
+	void TurnPitch(float Value);
 
 private:
 	UPROPERTY(VisibleAnywhere)

@@ -40,12 +40,22 @@ void ADrone::BeginPlay()
 void ADrone::MoveForward(float Value)
 {
 
-	if (Controller && (Value != 0.f))
+	if ((Controller != nullptr) && (Value != 0.f))
 	{
 		FVector Forward = GetActorForwardVector();
 		AddMovementInput(Forward, Value);
 	}
 
+}
+
+void ADrone::TurnYaw(float Value)
+{
+	AddControllerYawInput(Value);
+}
+
+void ADrone::TurnPitch(float Value)
+{
+	AddControllerPitchInput(Value);
 }
 
 // Called every frame
@@ -61,6 +71,8 @@ void ADrone::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ADrone::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("TurnYaw"), this, &ADrone::TurnYaw);
+	PlayerInputComponent->BindAxis(TEXT("TurnPitch"), this, &ADrone::TurnPitch);
 
 }
 
