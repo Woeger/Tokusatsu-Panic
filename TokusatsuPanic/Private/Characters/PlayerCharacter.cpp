@@ -16,8 +16,6 @@ APlayerCharacter::APlayerCharacter()
 	bUseControllerRotationRoll = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
-
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
@@ -25,6 +23,9 @@ APlayerCharacter::APlayerCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(CameraBoom);
+
+	jumping = false;
+	jumpCount = 0;
 
 }
 
@@ -76,11 +77,34 @@ void APlayerCharacter::TurnPitch(float Value)
 	AddControllerPitchInput(Value);
 }
 
+void APlayerCharacter::CheckJump()
+{
+	if (jumping)
+	{
+		jumping = false;
+	}
+
+	else
+	{
+		jumping = true;
+		jumpCount++;
+
+		if (jumpCount == 2)
+		{
+			LaunchCharacter(FVector(0, 0, 500), false, true);
+		}
+	}
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (jumping)
+	{
+		Jump();
+	}
 }
 
 // Called to bind functionality to input
@@ -92,6 +116,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis(TEXT("Strafe"), this, &APlayerCharacter::Strafe);
 	PlayerInputComponent->BindAxis(TEXT("TurnYaw"), this, &APlayerCharacter::TurnYaw);
 	PlayerInputComponent->BindAxis(TEXT("TurnPitch"), this, &APlayerCharacter::TurnPitch);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::CheckJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::CheckJump);
 
 }
 

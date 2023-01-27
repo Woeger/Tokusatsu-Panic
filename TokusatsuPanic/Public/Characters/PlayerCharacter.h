@@ -40,4 +40,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY()
+	bool jumping;
+
+	UPROPERTY()
+	int jumpCount;
+
+	void CheckJump();
 };
