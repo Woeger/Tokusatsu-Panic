@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
+#include "Animation/AnimMontage.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -90,6 +91,34 @@ void APlayerCharacter::EKeyPress()
 	}
 }
 
+void APlayerCharacter::Attack()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && AttackMontage)
+	{
+		AnimInstance->Montage_Play(AttackMontage);
+	}
+
+	int32 RandomAttack = FMath::RandRange(1, 3);
+	FName SectionName = FName();
+
+	switch (RandomAttack)
+	{
+	case 1:
+		SectionName = FName("Attack1");
+		break;
+	case 2:
+		SectionName = FName("Attack2");
+		break;
+	case 3:
+		SectionName = FName("Attack3");
+		break;
+	}
+
+	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+}
+
 void APlayerCharacter::CheckJump()
 {
 	if (jumping)
@@ -125,16 +154,21 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	//Movement Bindings
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &APlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("Strafe"), this, &APlayerCharacter::Strafe);
 	PlayerInputComponent->BindAxis(TEXT("TurnYaw"), this, &APlayerCharacter::TurnYaw);
 	PlayerInputComponent->BindAxis(TEXT("TurnPitch"), this, &APlayerCharacter::TurnPitch);
 
+	//Jump Bindings
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::CheckJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::CheckJump);
 
+	//Equip Bindings
 	PlayerInputComponent->BindAction("Equip", IE_Released, this, &APlayerCharacter::EKeyPress);
 
+	//Attack Bindings
+	PlayerInputComponent->BindAction("Attack", IE_Released, this, &APlayerCharacter::Attack);
 }
 
 void APlayerCharacter::Landed(const FHitResult& Hit)

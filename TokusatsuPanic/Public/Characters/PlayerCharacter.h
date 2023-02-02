@@ -9,6 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class AItem;
+class UAnimMontage;
 
 UENUM(BlueprintType)
 enum class EEquippedState : uint8
@@ -52,6 +53,7 @@ protected:
 	void TurnYaw(float Value);
 	void TurnPitch(float Value);
 	void EKeyPress();
+	void Attack();
 
 private:
 
@@ -73,4 +75,8 @@ private:
 	AItem* OverlappingItem;
 
 	EEquippedState EquipState = EEquippedState::EES_Unequipped;
+
+	//Animation montages
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* AttackMontage;
 };
