@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class AItem;
 
 UCLASS()
 class TOKUSATSUPANIC_API APlayerCharacter : public ACharacter
@@ -26,6 +27,11 @@ public:
 
 	virtual void Landed(const FHitResult& Hit) override;
 
+//Section for getters/setters
+public:
+	//Setter for overlapping item
+	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -34,6 +40,7 @@ protected:
 	void Strafe(float Value);
 	void TurnYaw(float Value);
 	void TurnPitch(float Value);
+	void EKeyPress();
 
 private:
 
@@ -50,4 +57,7 @@ private:
 	int jumpCount;
 
 	void CheckJump();
+
+	UPROPERTY(VisibleInstanceOnly)
+	AItem* OverlappingItem;
 };

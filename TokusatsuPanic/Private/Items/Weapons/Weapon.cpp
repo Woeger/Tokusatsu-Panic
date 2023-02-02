@@ -4,6 +4,13 @@
 #include "Items/Weapons/Weapon.h"
 #include "Characters/PlayerCharacter.h"
 
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+{
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+
+	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+}
+
 void AWeapon::CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::CollisionSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
@@ -12,10 +19,11 @@ void AWeapon::CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, A
 
 	if (PlayerCharacter)
 	{
-		FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-		ItemMesh->AttachToComponent(PlayerCharacter->GetMesh(), TransformRules, FName("RightHandSocket"));
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(1, 25.f, FColor::Cyan, TEXT("Press 'E' to equip!"));
+		}
 	}
-	
 }
 
 void AWeapon::CollisionSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

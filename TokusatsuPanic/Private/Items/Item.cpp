@@ -4,6 +4,7 @@
 #include "Items/Item.h"
 #include "TokusatsuPanic/DebugMacro.h"
 #include "Components/SphereComponent.h"
+#include "Characters/PlayerCharacter.h"
 
 // Sets default values
 AItem::AItem()
@@ -40,19 +41,21 @@ float AItem::TransformedCos()
 
 void AItem::CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString ActorName = OtherActor->GetName();
-	if (GEngine)
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+
+	if (PlayerCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 25.f, FColor::Cyan, ActorName);
+		PlayerCharacter->SetOverlappingItem(this);
 	}
 }
 
 void AItem::CollisionSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	const FString ActorEndName = OtherActor->GetName();
-	if (GEngine)
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+
+	if (PlayerCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 25.f, FColor::Red, ActorEndName);
+		PlayerCharacter->SetOverlappingItem(nullptr);
 	}
 }
 
