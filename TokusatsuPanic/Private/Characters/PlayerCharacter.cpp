@@ -86,6 +86,7 @@ void APlayerCharacter::EKeyPress()
 	if (OverlappingWeapon)
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+		EquipState = EEquippedState::EES_Equipped1H;
 	}
 }
 

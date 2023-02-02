@@ -10,6 +10,14 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 
+UENUM(BlueprintType)
+enum class EEquippedState : uint8
+{
+	EES_Unequipped UMETA(DisplayName = "Unequipped"),
+	EES_Equipped1H UMETA(DisplayName = "Equipped One-Handed"),
+	EES_Equipped2H UMETA(DisplayName = "Equipped Two-Handed")
+};
+
 UCLASS()
 class TOKUSATSUPANIC_API APlayerCharacter : public ACharacter
 {
@@ -31,6 +39,9 @@ public:
 public:
 	//Setter for overlapping item
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE EEquippedState GetEquipState() { return EquipState; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -60,4 +71,6 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
+
+	EEquippedState EquipState = EEquippedState::EES_Unequipped;
 };
