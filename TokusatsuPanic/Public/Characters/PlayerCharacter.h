@@ -5,19 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
+#include "CharacterEnums.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
-
-UENUM(BlueprintType)
-enum class EEquippedState : uint8
-{
-	EES_Unequipped UMETA(DisplayName = "Unequipped"),
-	EES_Equipped1H UMETA(DisplayName = "Equipped One-Handed"),
-	EES_Equipped2H UMETA(DisplayName = "Equipped Two-Handed")
-};
 
 UCLASS()
 class TOKUSATSUPANIC_API APlayerCharacter : public ACharacter
@@ -67,6 +60,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
 
+	//Jumping
 	UPROPERTY()
 	bool jumping;
 
@@ -78,7 +72,9 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
+	//Enums
 	EEquippedState EquipState = EEquippedState::EES_Unequipped;
+	EActionState ActionState = EActionState::EAS_Idle;
 
 	//Animation montages
 	UPROPERTY(EditDefaultsOnly, Category = Montages)

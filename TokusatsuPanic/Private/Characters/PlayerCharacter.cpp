@@ -38,6 +38,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+//Forward/Back movement
 void APlayerCharacter::MoveForward(float Value)
 {
 
@@ -54,6 +55,7 @@ void APlayerCharacter::MoveForward(float Value)
 
 }
 
+//Left/Right movement
 void APlayerCharacter::Strafe(float Value)
 {
 
@@ -70,6 +72,7 @@ void APlayerCharacter::Strafe(float Value)
 
 }
 
+//Turning
 void APlayerCharacter::TurnYaw(float Value)
 {
 	AddControllerYawInput(Value);
@@ -80,6 +83,7 @@ void APlayerCharacter::TurnPitch(float Value)
 	AddControllerPitchInput(Value);
 }
 
+//Equipping Items
 void APlayerCharacter::EKeyPress()
 {
 	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
@@ -91,9 +95,14 @@ void APlayerCharacter::EKeyPress()
 	}
 }
 
+//Attacking
 void APlayerCharacter::Attack()
 {
-	PlayAttackMontage();
+	if (ActionState == EActionState::EAS_Idle)
+	{
+		ActionState = EActionState::EAS_Attack;
+		PlayAttackMontage();
+	}
 }
 
 void APlayerCharacter::PlayAttackMontage()
@@ -105,7 +114,7 @@ void APlayerCharacter::PlayAttackMontage()
 		AnimInstance->Montage_Play(AttackMontage);
 	}
 
-	int32 RandomAttack = FMath::RandRange(1, 3);
+	const int32 RandomAttack = FMath::RandRange(1, 3);
 	FName SectionName = FName();
 
 	switch (RandomAttack)
@@ -124,6 +133,7 @@ void APlayerCharacter::PlayAttackMontage()
 	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 }
 
+//Double jump
 void APlayerCharacter::CheckJump()
 {
 	if (jumping)
