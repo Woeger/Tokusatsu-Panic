@@ -3,6 +3,13 @@
 
 #include "Items/Weapons/Weapon.h"
 #include "Characters/PlayerCharacter.h"
+#include "Components/BoxComponent.h"
+
+AWeapon::AWeapon()
+{
+	WeaponHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Hitbox"));
+	WeaponHitbox->SetupAttachment(GetRootComponent());
+}
 
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
