@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
+class AWeapon;
 
 UCLASS()
 class TOKUSATSUPANIC_API APlayerCharacter : public ACharacter
@@ -48,13 +49,24 @@ protected:
 	void TurnPitch(float Value);
 	void EKeyPress();
 	void Attack();
+	bool CanAttack();
 
 	//Montage Functions
 	void PlayAttackMontage();
 	void PlayEquipMontage(FName SectionName);
+	bool CanUnarm();
+	bool CanArm();
 
 	UFUNCTION(BlueprintCallable)
-		void AttackEnd();
+	void AttackEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void Unarm();
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquip();
 
 private:
 
@@ -75,6 +87,9 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
+
+	UPROPERTY(VisibleAnywhere)
+	AWeapon* EquippedWeapon;
 
 	//Enums
 	EEquippedState EquipState = EEquippedState::EES_Unequipped;

@@ -92,33 +92,73 @@ void APlayerCharacter::EKeyPress()
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
 		EquipState = EEquippedState::EES_Equipped1H;
+		OverlappingItem = nullptr;
 		EquippedWeapon = OverlappingWeapon;
 	}
 
 	else
 	{
-		if (ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped && EquipMontage)
+		if (CanUnarm())
 		{
 			PlayEquipMontage(FName("Unequip"));
 			EquipState = EEquippedState::EES_Unequipped;
+			ActionState = EActionState::EAS_Equipping;
 		}
 
-		if (ActionState == EActionState::EAS_Idle && EquipState == EEquippedState::EES_Unequipped && EquippedWeapon)
+		else if (CanArm())
 		{
 			PlayEquipMontage(FName("Equip"));
 			EquipState = EEquippedState::EES_Equipped1H;
+			ActionState = EActionState::EAS_Equipping;
 		}
 	}
 }
 
+bool APlayerCharacter::CanUnarm()
+{
+	return ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped;
+}
+
+void APlayerCharacter::Unarm()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+	}
+}
+
+bool APlayerCharacter::CanArm()
+{
+	return ActionState == EActionState::EAS_Idle && EquipState == EEquippedState::EES_Unequipped && EquippedWeapon;
+}
+
+void APlayerCharacter::Arm()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+	}
+}
+
+void APlayerCharacter::FinishEquip()
+{
+	ActionState = EActionState::EAS_Idle;
+}
+
+
 //Attacking
 void APlayerCharacter::Attack()
 {
-	if (ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped)
+	if (CanAttack())
 	{
 		PlayAttackMontage();
 		ActionState = EActionState::EAS_Attack;
 	}
+}
+
+bool APlayerCharacter::CanAttack()
+{
+	return ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped;
 }
 
 void APlayerCharacter::PlayAttackMontage()
@@ -156,9 +196,8 @@ void APlayerCharacter::PlayEquipMontage(FName SectionName)
 	if (AnimInstance && EquipMontage)
 	{
 		AnimInstance->Montage_Play(EquipMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
 	}
-
-	AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
 
 }
 
