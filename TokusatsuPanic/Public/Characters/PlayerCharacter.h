@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "PlayerCharacter.generated.h"
 #include "CharacterEnums.h"
+#include "PlayerCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -51,6 +51,10 @@ protected:
 
 	//Montage Functions
 	void PlayAttackMontage();
+	void PlayEquipMontage(FName SectionName);
+
+	UFUNCTION(BlueprintCallable)
+		void AttackEnd();
 
 private:
 
@@ -74,9 +78,13 @@ private:
 
 	//Enums
 	EEquippedState EquipState = EEquippedState::EES_Unequipped;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Idle;
 
 	//Animation montages
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 };

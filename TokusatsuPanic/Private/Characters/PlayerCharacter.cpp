@@ -42,7 +42,7 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::MoveForward(float Value)
 {
 
-	if ((Controller != nullptr) && (Value != 0.f))
+	if ((Controller != nullptr) && (Value != 0.f) && ActionState == EActionState::EAS_Idle)
 	{
 		//Find which way is forward
 		const FRotator ControlRotation = GetControlRotation();
@@ -59,7 +59,7 @@ void APlayerCharacter::MoveForward(float Value)
 void APlayerCharacter::Strafe(float Value)
 {
 
-	if ((Controller != nullptr) && (Value != 0.f))
+	if ((Controller != nullptr) && (Value != 0.f) && ActionState == EActionState::EAS_Idle)
 	{
 		//Find which way is right
 		const FRotator ControlRotation = GetControlRotation();
@@ -92,16 +92,32 @@ void APlayerCharacter::EKeyPress()
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
 		EquipState = EEquippedState::EES_Equipped1H;
+		EquippedWeapon = OverlappingWeapon;
+	}
+
+	else
+	{
+		if (ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped && EquipMontage)
+		{
+			PlayEquipMontage(FName("Unequip"));
+			EquipState = EEquippedState::EES_Unequipped;
+		}
+
+		if (ActionState == EActionState::EAS_Idle && EquipState == EEquippedState::EES_Unequipped && EquippedWeapon)
+		{
+			PlayEquipMontage(FName("Equip"));
+			EquipState = EEquippedState::EES_Equipped1H;
+		}
 	}
 }
 
 //Attacking
 void APlayerCharacter::Attack()
 {
-	if (ActionState == EActionState::EAS_Idle)
+	if (ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped)
 	{
-		ActionState = EActionState::EAS_Attack;
 		PlayAttackMontage();
+		ActionState = EActionState::EAS_Attack;
 	}
 }
 
@@ -131,6 +147,24 @@ void APlayerCharacter::PlayAttackMontage()
 	}
 
 	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+}
+
+void APlayerCharacter::PlayEquipMontage(FName SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && EquipMontage)
+	{
+		AnimInstance->Montage_Play(EquipMontage);
+	}
+
+	AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+
+}
+
+void APlayerCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_Idle;
 }
 
 //Double jump
