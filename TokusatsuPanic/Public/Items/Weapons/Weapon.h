@@ -25,11 +25,22 @@ public:
 
 protected:
 
+	virtual void BeginPlay();
+
 	virtual void CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-	
 	virtual void CollisionSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+
+	UFUNCTION()
+	void OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* WeaponHitbox;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* StartHitTrace;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* EndHitTrace;
 };

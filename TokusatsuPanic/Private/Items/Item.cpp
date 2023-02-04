@@ -39,7 +39,8 @@ float AItem::TransformedCos()
 	return Amplitude * FMath::Cos(RunningTime * TimeConstant);
 }
 
-void AItem::CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AItem::CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
+	const FHitResult& SweepResult)
 {
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 
