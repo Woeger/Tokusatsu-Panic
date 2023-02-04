@@ -23,6 +23,10 @@ public:
 
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 
+//Getters/Setters
+public:
+	FORCEINLINE UBoxComponent* GetWeaponHitbox() const { return WeaponHitbox; }
+
 protected:
 
 	virtual void BeginPlay();

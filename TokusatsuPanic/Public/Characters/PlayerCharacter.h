@@ -30,6 +30,9 @@ public:
 
 	virtual void Landed(const FHitResult& Hit) override;
 
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollision(ECollisionEnabled::Type CollisionEnabled);
+
 //Section for getters/setters
 public:
 	//Setter for overlapping item

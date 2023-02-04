@@ -8,6 +8,7 @@
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -156,10 +157,25 @@ void APlayerCharacter::Attack()
 	}
 }
 
+void APlayerCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_Idle;
+}
+
 bool APlayerCharacter::CanAttack()
 {
 	return ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped;
 }
+
+void APlayerCharacter::SetWeaponCollision(ECollisionEnabled::Type CollisionEnabled)
+{
+	if (EquippedWeapon && EquippedWeapon->GetWeaponHitbox())
+	{
+		EquippedWeapon->GetWeaponHitbox()->SetCollisionEnabled(CollisionEnabled);
+	}
+}
+
+//Montages
 
 void APlayerCharacter::PlayAttackMontage()
 {
@@ -199,11 +215,6 @@ void APlayerCharacter::PlayEquipMontage(FName SectionName)
 		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
 	}
 
-}
-
-void APlayerCharacter::AttackEnd()
-{
-	ActionState = EActionState::EAS_Idle;
 }
 
 //Double jump

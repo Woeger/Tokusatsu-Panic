@@ -10,7 +10,7 @@ AWeapon::AWeapon()
 {
 	WeaponHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Hitbox"));
 	WeaponHitbox->SetupAttachment(GetRootComponent());
-	WeaponHitbox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	WeaponHitbox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponHitbox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	WeaponHitbox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
