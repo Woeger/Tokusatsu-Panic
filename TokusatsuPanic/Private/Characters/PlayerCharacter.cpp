@@ -93,6 +93,11 @@ void APlayerCharacter::EKeyPress()
 
 void APlayerCharacter::Attack()
 {
+	PlayAttackMontage();
+}
+
+void APlayerCharacter::PlayAttackMontage()
+{
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
 	if (AnimInstance && AttackMontage)

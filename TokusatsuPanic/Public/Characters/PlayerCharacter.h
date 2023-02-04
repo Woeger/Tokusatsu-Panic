@@ -48,12 +48,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//Input Callbacks
 	void MoveForward(float Value);
 	void Strafe(float Value);
 	void TurnYaw(float Value);
 	void TurnPitch(float Value);
 	void EKeyPress();
 	void Attack();
+
+	//Montage Functions
+	void PlayAttackMontage();
 
 private:
 
