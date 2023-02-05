@@ -22,5 +22,5 @@ class TOKUSATSUPANIC_API IHitInterface
 
 public:
 
-	virtual void GetHit() = 0;
+	virtual void GetHit(const FVector& Impact) = 0;
 };

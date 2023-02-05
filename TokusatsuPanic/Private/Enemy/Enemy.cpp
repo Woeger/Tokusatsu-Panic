@@ -4,6 +4,7 @@
 #include "Enemy/Enemy.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "TokusatsuPanic/DebugMacro.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -16,6 +17,11 @@ AEnemy::AEnemy()
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
+}
+
+void AEnemy::GetHit(const FVector& Impact)
+{
+	DRAW_SPHERE(Impact);
 }
 
 void AEnemy::BeginPlay()
