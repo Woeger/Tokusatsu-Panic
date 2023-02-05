@@ -22,12 +22,24 @@ AEnemy::AEnemy()
 void AEnemy::GetHit(const FVector& Impact)
 {
 	DRAW_SPHERE(Impact);
+	PlayHitReactMontage(FName("FromFront"));
 }
 
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AEnemy::PlayHitReactMontage(FName SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	
+	if (AnimInstance && HitReactMontage)
+	{
+		AnimInstance->Montage_Play(HitReactMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, HitReactMontage);
+	}
 }
 
 void AEnemy::Tick(float DeltaTime)
