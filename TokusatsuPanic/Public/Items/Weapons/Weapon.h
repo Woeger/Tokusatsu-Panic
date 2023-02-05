@@ -23,6 +23,8 @@ public:
 
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 
+	TArray<AActor*> IgnoreActors;
+
 //Getters/Setters
 public:
 	FORCEINLINE UBoxComponent* GetWeaponHitbox() const { return WeaponHitbox; }

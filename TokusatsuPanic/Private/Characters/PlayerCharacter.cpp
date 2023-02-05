@@ -173,6 +173,8 @@ void APlayerCharacter::SetWeaponCollision(ECollisionEnabled::Type CollisionEnabl
 	{
 		EquippedWeapon->GetWeaponHitbox()->SetCollisionEnabled(CollisionEnabled);
 	}
+
+	EquippedWeapon->IgnoreActors.Empty();
 }
 
 //Montages

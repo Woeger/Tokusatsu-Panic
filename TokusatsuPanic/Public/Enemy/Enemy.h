@@ -23,6 +23,8 @@ public:
 
 	virtual void GetHit(const FVector& Impact) override;
 
+	void DirectionalHitReact(const FVector& Impact);
+
 protected:
 	virtual void BeginPlay() override;
 
