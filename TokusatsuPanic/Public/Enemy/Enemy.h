@@ -8,6 +8,7 @@
 #include "Enemy.generated.h"
 
 class UAnimMontage;
+class UAttributeComponent;
 
 UCLASS()
 class TOKUSATSUPANIC_API AEnemy : public ACharacter, public IHitInterface
@@ -31,6 +32,9 @@ protected:
 	void PlayHitReactMontage(FName SectionName);
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	UAttributeComponent* Attributes;
+
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
 };
