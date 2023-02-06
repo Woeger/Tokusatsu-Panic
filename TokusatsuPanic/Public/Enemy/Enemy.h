@@ -9,6 +9,7 @@
 
 class UAnimMontage;
 class UAttributeComponent;
+class UHealthBarComponent;
 
 UCLASS()
 class TOKUSATSUPANIC_API AEnemy : public ACharacter, public IHitInterface
@@ -26,8 +27,12 @@ public:
 
 	void DirectionalHitReact(const FVector& Impact);
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 protected:
 	virtual void BeginPlay() override;
+
+	void Death();
 
 	void PlayHitReactMontage(FName SectionName);
 
@@ -35,6 +40,12 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
 
+	UPROPERTY(VisibleAnywhere)
+	UHealthBarComponent* HealthBarComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* DeathMontage;
 };

@@ -8,6 +8,21 @@ UAttributeComponent::UAttributeComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void UAttributeComponent::TakeDamage(float Damage)
+{
+	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.f, MaxHealth);
+}
+
+float UAttributeComponent::GetHealthPercent()
+{
+	return CurrentHealth / MaxHealth;
+}
+
+bool UAttributeComponent::IsAlive()
+{
+	return CurrentHealth > 0.f;
+}
+
 void UAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();

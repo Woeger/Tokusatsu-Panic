@@ -91,7 +91,7 @@ void APlayerCharacter::EKeyPress()
 
 	if (OverlappingWeapon)
 	{
-		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this);
 		EquipState = EEquippedState::EES_Equipped1H;
 		OverlappingItem = nullptr;
 		EquippedWeapon = OverlappingWeapon;

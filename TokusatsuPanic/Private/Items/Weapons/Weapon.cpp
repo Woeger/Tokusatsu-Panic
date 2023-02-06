@@ -5,6 +5,7 @@
 #include "Characters/PlayerCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Interfaces/HitInterface.h"
 
 AWeapon::AWeapon()
@@ -29,9 +30,10 @@ void AWeapon::BeginPlay()
 	WeaponHitbox->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnHitboxOverlap);
 }
 
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, APawn* InInstigator)
 {
 	AttachMeshToSocket(InParent, InSocketName);
+	SetInstigator(InInstigator);
 	ItemState = EItemState::EIS_Equipped;
 }
 
@@ -82,6 +84,8 @@ void AWeapon::OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 
 	if (Hit.GetActor())
 	{
+		UGameplayStatics::ApplyDamage(Hit.GetActor(), Damage, GetInstigator()->GetController(), this, UDamageType::StaticClass());
+
 		IHitInterface* HitInterface = Cast<IHitInterface>(Hit.GetActor());
 
 		if (HitInterface)

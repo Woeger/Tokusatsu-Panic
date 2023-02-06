@@ -17,6 +17,12 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+//Getters + Setters
+public:
+	void TakeDamage(float Damage);
+	float GetHealthPercent();
+	bool IsAlive();
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "TokusatsuPanic/DebugMacro.h"
 #include "Components/AttributeComponent.h"
+#include "HUD/HealthBarComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -19,11 +20,21 @@ AEnemy::AEnemy()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Enemy Attributes"));
+	HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("Enemy Health"));
+	HealthBarComponent->SetupAttachment(GetRootComponent());
 }
 
 void AEnemy::GetHit(const FVector& Impact)
 {
-	DirectionalHitReact(Impact);
+	if (Attributes && Attributes->IsAlive())
+	{
+		DirectionalHitReact(Impact);
+	}
+
+	else
+	{
+		Death();
+	}
 }
 
 void AEnemy::DirectionalHitReact(const FVector& Impact)
@@ -70,10 +81,47 @@ void AEnemy::DirectionalHitReact(const FVector& Impact)
 	PlayHitReactMontage(FName(SectionName));
 }
 
+float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (Attributes && HealthBarComponent)
+	{
+		Attributes->TakeDamage(DamageAmount);
+		HealthBarComponent->SetHealthPercent(Attributes->GetHealthPercent());
+	}
+	return 0.0f;
+}
+
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+void AEnemy::Death()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && DeathMontage)
+	{
+		AnimInstance->Montage_Play(DeathMontage);
+
+		const int32 RandomDeath = FMath::RandRange(1, 3);
+		FName SectionName = FName();
+
+		switch (RandomDeath)
+		{
+		case 1:
+			SectionName = FName("Death1");
+			break;
+		case 2:
+			SectionName = FName("Death2");
+			break;
+		case 3:
+			SectionName = FName("Death3");
+			break;
+		}
+
+		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+	}
 }
 
 void AEnemy::PlayHitReactMontage(FName SectionName)
