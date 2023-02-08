@@ -7,6 +7,8 @@
 #include "TokusatsuPanic/DebugMacro.h"
 #include "Components/AttributeComponent.h"
 #include "HUD/HealthBarComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "AIController.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -22,6 +24,11 @@ AEnemy::AEnemy()
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Enemy Attributes"));
 	HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("Enemy Health"));
 	HealthBarComponent->SetupAttachment(GetRootComponent());
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
 }
 
 void AEnemy::GetHit(const FVector& Impact)
@@ -101,7 +108,26 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	HealthBarComponent->SetVisibility(false);
+
+	if (HealthBarComponent)
+	{
+		HealthBarComponent->SetVisibility(false);
+	}
+
+	EnemyController = Cast<AAIController>(GetController());
+
+	if (EnemyController && PatrolTarget)
+	{
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(PatrolTarget);
+		MoveRequest.SetAcceptanceRadius(10.f);
+
+		FNavPathSharedPtr NavPath;
+
+		EnemyController->MoveTo(MoveRequest, &NavPath);
+
+		TArray<FNavPathPoint> PathPoints = NavPath->GetPathPoints();
+	}
 }
 
 void AEnemy::Death()
@@ -155,15 +181,19 @@ void AEnemy::PlayHitReactMontage(FName SectionName)
 	}
 }
 
+bool AEnemy::InTargetRange(AActor* Target, double AcceptanceRadius)
+{
+	const double Distance = (Target->GetActorLocation() - GetActorLocation()).Size();
+	return Distance <= AcceptanceRadius;
+}
+
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	if (CombatTarget)
 	{
-		const double Distance = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
-
-		if (Distance > ActiveCombatRange)
+		if (!InTargetRange(CombatTarget, ActiveCombatRange))
 		{
 			CombatTarget = nullptr;
 
@@ -173,6 +203,43 @@ void AEnemy::Tick(float DeltaTime)
 			}
 		}
 
+	}
+
+	if (PatrolTarget && EnemyController)
+	{
+		if (InTargetRange(PatrolTarget, ActivePatrolRange))
+		{
+
+			TArray<AActor*> ValidPatrolTargets;
+
+			for (AActor* Target : PatrolTargets)
+			{
+				if (Target != PatrolTarget)
+				{
+					ValidPatrolTargets.AddUnique(Target);
+				}
+			}
+			 
+
+
+			const int32 PatrolTargetLength = ValidPatrolTargets.Num();
+			if (PatrolTargetLength > 0)
+			{
+				const int32 RandomTarget = FMath::RandRange(0, PatrolTargetLength - 1);
+				AActor* Target = ValidPatrolTargets[RandomTarget];
+				PatrolTarget = Target;
+
+				FAIMoveRequest MoveRequest;
+				MoveRequest.SetGoalActor(PatrolTarget);
+				MoveRequest.SetAcceptanceRadius(10.f);
+
+				FNavPathSharedPtr NavPath;
+
+				EnemyController->MoveTo(MoveRequest, &NavPath);
+
+				TArray<FNavPathPoint> PathPoints = NavPath->GetPathPoints();
+			}
+		}
 	}
 
 }

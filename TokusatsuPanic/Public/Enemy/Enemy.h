@@ -11,6 +11,7 @@
 class UAnimMontage;
 class UAttributeComponent;
 class UHealthBarComponent;
+class AAIController;
 
 UCLASS()
 class TOKUSATSUPANIC_API AEnemy : public ACharacter, public IHitInterface
@@ -37,6 +38,8 @@ protected:
 
 	void PlayHitReactMontage(FName SectionName);
 
+	bool InTargetRange(AActor* Target, double AcceptanceRadius);
+
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
@@ -47,15 +50,31 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* DeathMontage;
-
 	UPROPERTY()
 	AActor* CombatTarget;
 
 	UPROPERTY(EditAnywhere)
 	double ActiveCombatRange = 500.f;
+
+	UPROPERTY(EditAnywhere)
+	double ActivePatrolRange = 200.f;
+
+	//Montages
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* HitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* DeathMontage;
+
+	//Navigation
+
+	UPROPERTY()
+	AAIController* EnemyController;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	AActor* PatrolTarget;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	TArray<AActor*> PatrolTargets;
 };
