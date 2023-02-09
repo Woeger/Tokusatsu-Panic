@@ -107,7 +107,11 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	}
 
 	CombatTarget = EventInstigator->GetPawn();
-	return 0.0f;
+	EnemyState = EEnemyState::EES_Chasing;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	MoveToTarget(CombatTarget);
+
+	return DamageAmount;
 }
 
 void AEnemy::BeginPlay()
@@ -201,11 +205,16 @@ void AEnemy::OnSeen(APawn* Target)
 {
 	if (Target->ActorHasTag(FName("PlayerCharacter")) && EnemyState == EEnemyState::EES_Patrolling)
 	{
-		EnemyState = EEnemyState::EES_Chasing;
+
 		GetWorldTimerManager().ClearTimer(PatrolTimer);
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		CombatTarget = Target;
-		MoveToTarget(CombatTarget);
+		
+		if (EnemyState != EEnemyState::EES_Attacking)
+		{
+			EnemyState = EEnemyState::EES_Chasing;
+			MoveToTarget(CombatTarget);
+		}
 	}
 }
 
@@ -266,6 +275,7 @@ void AEnemy::PatrolTargetCheck()
 
 void AEnemy::CombatTargetCheck()
 {
+	//Outside of aggro range, lose interest in target
 	if (!InTargetRange(CombatTarget, ActiveCombatRange))
 	{
 		CombatTarget = nullptr;
@@ -278,6 +288,22 @@ void AEnemy::CombatTargetCheck()
 		{
 			HealthBarComponent->SetVisibility(false);
 		}
+	}
+
+	//Outside of attack range, continue to chase
+	else if (!InTargetRange(CombatTarget, AttackRange) && EnemyState != EEnemyState::EES_Chasing)
+	{
+		EnemyState = EEnemyState::EES_Chasing;
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		MoveToTarget(CombatTarget);
+
+	}
+
+	//Inside of attack range, attack target
+	else if (InTargetRange(CombatTarget, AttackRange) && EnemyState != EEnemyState::EES_Attacking)
+	{
+		EnemyState = EEnemyState::EES_Attacking;
+		//Attack target
 	}
 }
 

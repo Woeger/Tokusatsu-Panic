@@ -85,6 +85,9 @@ private:
 	double ActiveCombatRange = 500.f;
 
 	UPROPERTY(EditAnywhere)
+	double AttackRange = 160.f;
+
+	UPROPERTY(EditAnywhere)
 	double ActivePatrolRange = 200.f;
 
 	UPROPERTY()
