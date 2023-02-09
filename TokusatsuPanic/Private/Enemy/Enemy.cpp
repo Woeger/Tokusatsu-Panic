@@ -9,6 +9,7 @@
 #include "HUD/HealthBarComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
+#include "Perception/PawnSensingComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -20,6 +21,10 @@ AEnemy::AEnemy()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+
+	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Pawn Sensing"));
+	PawnSensingComponent->SightRadius = 4000.f;
+	PawnSensingComponent->SetPeripheralVisionAngle(45.f);
 
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Enemy Attributes"));
 	HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("Enemy Health"));
@@ -115,19 +120,7 @@ void AEnemy::BeginPlay()
 	}
 
 	EnemyController = Cast<AAIController>(GetController());
-
-	if (EnemyController && PatrolTarget)
-	{
-		FAIMoveRequest MoveRequest;
-		MoveRequest.SetGoalActor(PatrolTarget);
-		MoveRequest.SetAcceptanceRadius(10.f);
-
-		FNavPathSharedPtr NavPath;
-
-		EnemyController->MoveTo(MoveRequest, &NavPath);
-
-		TArray<FNavPathPoint> PathPoints = NavPath->GetPathPoints();
-	}
+	MoveToTarget(PatrolTarget);
 }
 
 void AEnemy::Death()
@@ -183,65 +176,82 @@ void AEnemy::PlayHitReactMontage(FName SectionName)
 
 bool AEnemy::InTargetRange(AActor* Target, double AcceptanceRadius)
 {
+	if (Target == nullptr) return false;
 	const double Distance = (Target->GetActorLocation() - GetActorLocation()).Size();
 	return Distance <= AcceptanceRadius;
+}
+
+void AEnemy::MoveToTarget(AActor* Target)
+{
+	if (EnemyController && Target)
+	{
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(Target);
+		MoveRequest.SetAcceptanceRadius(10.f);
+		EnemyController->MoveTo(MoveRequest);
+	}
+}
+
+AActor* AEnemy::DecidePatrolTarget()
+{
+	TArray<AActor*> ValidPatrolTargets;
+
+	for (AActor* Target : PatrolTargets)
+	{
+		if (Target != PatrolTarget)
+		{
+			ValidPatrolTargets.AddUnique(Target);
+		}
+	}
+
+	const int32 PatrolTargetLength = ValidPatrolTargets.Num();
+	if (PatrolTargetLength > 0)
+	{
+		const int32 RandomTarget = FMath::RandRange(0, PatrolTargetLength - 1);
+		return ValidPatrolTargets[RandomTarget];
+	}
+
+	return nullptr;
+
+}
+
+void AEnemy::PatrolTimerFinish()
+{
+	MoveToTarget(PatrolTarget);
 }
 
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (CombatTarget)
+	CombatTargetCheck();
+
+	PatrolTargetCheck();
+
+}
+
+void AEnemy::PatrolTargetCheck()
+{
+	if (InTargetRange(PatrolTarget, ActivePatrolRange))
 	{
-		if (!InTargetRange(CombatTarget, ActiveCombatRange))
-		{
-			CombatTarget = nullptr;
+		PatrolTarget = DecidePatrolTarget();
 
-			if (HealthBarComponent)
-			{
-				HealthBarComponent->SetVisibility(false);
-			}
-		}
-
+		const float TimerDelay = FMath::RandRange(5.f, 10.f);
+		GetWorldTimerManager().SetTimer(PatrolTimer, this, &AEnemy::PatrolTimerFinish, TimerDelay);
 	}
+}
 
-	if (PatrolTarget && EnemyController)
+void AEnemy::CombatTargetCheck()
+{
+	if (!InTargetRange(CombatTarget, ActiveCombatRange))
 	{
-		if (InTargetRange(PatrolTarget, ActivePatrolRange))
+		CombatTarget = nullptr;
+
+		if (HealthBarComponent)
 		{
-
-			TArray<AActor*> ValidPatrolTargets;
-
-			for (AActor* Target : PatrolTargets)
-			{
-				if (Target != PatrolTarget)
-				{
-					ValidPatrolTargets.AddUnique(Target);
-				}
-			}
-			 
-
-
-			const int32 PatrolTargetLength = ValidPatrolTargets.Num();
-			if (PatrolTargetLength > 0)
-			{
-				const int32 RandomTarget = FMath::RandRange(0, PatrolTargetLength - 1);
-				AActor* Target = ValidPatrolTargets[RandomTarget];
-				PatrolTarget = Target;
-
-				FAIMoveRequest MoveRequest;
-				MoveRequest.SetGoalActor(PatrolTarget);
-				MoveRequest.SetAcceptanceRadius(10.f);
-
-				FNavPathSharedPtr NavPath;
-
-				EnemyController->MoveTo(MoveRequest, &NavPath);
-
-				TArray<FNavPathPoint> PathPoints = NavPath->GetPathPoints();
-			}
+			HealthBarComponent->SetVisibility(false);
 		}
 	}
-
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

@@ -12,6 +12,7 @@ class UAnimMontage;
 class UAttributeComponent;
 class UHealthBarComponent;
 class AAIController;
+class UPawnSensingComponent;
 
 UCLASS()
 class TOKUSATSUPANIC_API AEnemy : public ACharacter, public IHitInterface
@@ -22,6 +23,10 @@ public:
 	AEnemy();
 
 	virtual void Tick(float DeltaTime) override;
+
+	void PatrolTargetCheck();
+
+	void CombatTargetCheck();
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -40,24 +45,28 @@ protected:
 
 	bool InTargetRange(AActor* Target, double AcceptanceRadius);
 
+	void MoveToTarget(AActor* Target);
+
+	AActor* DecidePatrolTarget();
+
+	UFUNCTION()
+	void OnSeen(AActor* Target);
+
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
+
+	//Components
+
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
 
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarComponent;
 
-	UPROPERTY()
-	AActor* CombatTarget;
-
-	UPROPERTY(EditAnywhere)
-	double ActiveCombatRange = 500.f;
-
-	UPROPERTY(EditAnywhere)
-	double ActivePatrolRange = 200.f;
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensingComponent;
 
 	//Montages
 
@@ -70,6 +79,15 @@ private:
 	//Navigation
 
 	UPROPERTY()
+	AActor* CombatTarget;
+
+	UPROPERTY(EditAnywhere)
+	double ActiveCombatRange = 500.f;
+
+	UPROPERTY(EditAnywhere)
+	double ActivePatrolRange = 200.f;
+
+	UPROPERTY()
 	AAIController* EnemyController;
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
@@ -77,4 +95,7 @@ private:
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;
+
+	FTimerHandle PatrolTimer;
+	void PatrolTimerFinish();
 };
