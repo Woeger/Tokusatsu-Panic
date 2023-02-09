@@ -37,6 +37,8 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Tags.Add(FName("PlayerCharacter"));
 }
 
 //Forward/Back movement

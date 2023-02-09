@@ -119,6 +119,11 @@ void AEnemy::BeginPlay()
 		HealthBarComponent->SetVisibility(false);
 	}
 
+	if (PawnSensingComponent)
+	{
+		PawnSensingComponent->OnSeePawn.AddDynamic(this, &AEnemy::OnSeen);
+	}
+
 	EnemyController = Cast<AAIController>(GetController());
 	MoveToTarget(PatrolTarget);
 }
@@ -192,6 +197,18 @@ void AEnemy::MoveToTarget(AActor* Target)
 	}
 }
 
+void AEnemy::OnSeen(APawn* Target)
+{
+	if (Target->ActorHasTag(FName("PlayerCharacter")) && EnemyState == EEnemyState::EES_Patrolling)
+	{
+		EnemyState = EEnemyState::EES_Chasing;
+		GetWorldTimerManager().ClearTimer(PatrolTimer);
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		CombatTarget = Target;
+		MoveToTarget(CombatTarget);
+	}
+}
+
 AActor* AEnemy::DecidePatrolTarget()
 {
 	TArray<AActor*> ValidPatrolTargets;
@@ -224,9 +241,15 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	CombatTargetCheck();
+	if (EnemyState != EEnemyState::EES_Patrolling)
+	{ 
+		CombatTargetCheck();
+	}
 
-	PatrolTargetCheck();
+	else
+	{
+		PatrolTargetCheck();
+	}
 
 }
 
@@ -246,6 +269,10 @@ void AEnemy::CombatTargetCheck()
 	if (!InTargetRange(CombatTarget, ActiveCombatRange))
 	{
 		CombatTarget = nullptr;
+
+		EnemyState = EEnemyState::EES_Patrolling;
+		GetCharacterMovement()->MaxWalkSpeed = 120.f;
+		MoveToTarget(PatrolTarget);
 
 		if (HealthBarComponent)
 		{

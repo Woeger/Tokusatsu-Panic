@@ -47,10 +47,10 @@ protected:
 
 	void MoveToTarget(AActor* Target);
 
-	AActor* DecidePatrolTarget();
-
 	UFUNCTION()
-	void OnSeen(AActor* Target);
+	void OnSeen(APawn* Target);
+
+	AActor* DecidePatrolTarget();
 
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
@@ -98,4 +98,6 @@ private:
 
 	FTimerHandle PatrolTimer;
 	void PatrolTimerFinish();
+
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 };
