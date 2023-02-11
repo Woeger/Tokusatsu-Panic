@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "CharacterBase.h"
 #include "CharacterEnums.h"
 #include "PlayerCharacter.generated.h"
 
@@ -14,7 +14,7 @@ class UAnimMontage;
 class AWeapon;
 
 UCLASS()
-class TOKUSATSUPANIC_API APlayerCharacter : public ACharacter
+class TOKUSATSUPANIC_API APlayerCharacter : public ACharacterBase
 {
 	GENERATED_BODY()
 
@@ -29,9 +29,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void Landed(const FHitResult& Hit) override;
-
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollision(ECollisionEnabled::Type CollisionEnabled);
 
 //Section for getters/setters
 public:
@@ -51,17 +48,14 @@ protected:
 	void TurnYaw(float Value);
 	void TurnPitch(float Value);
 	void EKeyPress();
-	void Attack();
-	bool CanAttack();
 
-	//Montage Functions
-	void PlayAttackMontage();
-	void PlayEquipMontage(FName SectionName);
+	//Attacking
+	virtual void Attack() override;
+	virtual bool CanAttack() override;
+	virtual void AttackEnd() override;
+
 	bool CanUnarm();
 	bool CanArm();
-
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd();
 
 	UFUNCTION(BlueprintCallable)
 	void Unarm();
@@ -70,6 +64,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquip();
+
+	//Montage Functions
+	virtual void PlayAttackMontage() override;
+	void PlayEquipMontage(FName SectionName);
 
 private:
 
@@ -91,18 +89,12 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
-	UPROPERTY(VisibleAnywhere)
-	AWeapon* EquippedWeapon;
-
 	//Enums
 	EEquippedState EquipState = EEquippedState::EES_Unequipped;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Idle;
 
 	//Animation montages
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* AttackMontage;
-
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
 };

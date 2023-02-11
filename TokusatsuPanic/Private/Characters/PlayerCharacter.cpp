@@ -169,16 +169,6 @@ bool APlayerCharacter::CanAttack()
 	return ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped;
 }
 
-void APlayerCharacter::SetWeaponCollision(ECollisionEnabled::Type CollisionEnabled)
-{
-	if (EquippedWeapon && EquippedWeapon->GetWeaponHitbox())
-	{
-		EquippedWeapon->GetWeaponHitbox()->SetCollisionEnabled(CollisionEnabled);
-	}
-
-	EquippedWeapon->IgnoreActors.Empty();
-}
-
 //Montages
 
 void APlayerCharacter::PlayAttackMontage()

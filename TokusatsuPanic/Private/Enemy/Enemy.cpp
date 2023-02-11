@@ -36,6 +36,48 @@ AEnemy::AEnemy()
 	bUseControllerRotationYaw = false;
 }
 
+void AEnemy::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (EnemyState != EEnemyState::EES_Patrolling)
+	{
+		CombatTargetCheck();
+	}
+
+	else
+	{
+		PatrolTargetCheck();
+	}
+
+}
+
+void AEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HealthBarComponent)
+	{
+		HealthBarComponent->SetVisibility(false);
+	}
+
+	if (PawnSensingComponent)
+	{
+		PawnSensingComponent->OnSeePawn.AddDynamic(this, &AEnemy::OnSeen);
+	}
+
+	EnemyController = Cast<AAIController>(GetController());
+	MoveToTarget(PatrolTarget);
+}
+
+void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+}
+
+//Damage/Death
+
 void AEnemy::GetHit(const FVector& Impact)
 {
 	if (HealthBarComponent)
@@ -52,6 +94,22 @@ void AEnemy::GetHit(const FVector& Impact)
 	{
 		Death();
 	}
+}
+
+float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (Attributes && HealthBarComponent)
+	{
+		Attributes->TakeDamage(DamageAmount);
+		HealthBarComponent->SetHealthPercent(Attributes->GetHealthPercent());
+	}
+
+	CombatTarget = EventInstigator->GetPawn();
+	EnemyState = EEnemyState::EES_Chasing;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	MoveToTarget(CombatTarget);
+
+	return DamageAmount;
 }
 
 void AEnemy::DirectionalHitReact(const FVector& Impact)
@@ -98,38 +156,15 @@ void AEnemy::DirectionalHitReact(const FVector& Impact)
 	PlayHitReactMontage(FName(SectionName));
 }
 
-float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+void AEnemy::PlayHitReactMontage(FName SectionName)
 {
-	if (Attributes && HealthBarComponent)
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && HitReactMontage)
 	{
-		Attributes->TakeDamage(DamageAmount);
-		HealthBarComponent->SetHealthPercent(Attributes->GetHealthPercent());
+		AnimInstance->Montage_Play(HitReactMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, HitReactMontage);
 	}
-
-	CombatTarget = EventInstigator->GetPawn();
-	EnemyState = EEnemyState::EES_Chasing;
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	MoveToTarget(CombatTarget);
-
-	return DamageAmount;
-}
-
-void AEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (HealthBarComponent)
-	{
-		HealthBarComponent->SetVisibility(false);
-	}
-
-	if (PawnSensingComponent)
-	{
-		PawnSensingComponent->OnSeePawn.AddDynamic(this, &AEnemy::OnSeen);
-	}
-
-	EnemyController = Cast<AAIController>(GetController());
-	MoveToTarget(PatrolTarget);
 }
 
 void AEnemy::Death()
@@ -172,16 +207,7 @@ void AEnemy::Death()
 
 }
 
-void AEnemy::PlayHitReactMontage(FName SectionName)
-{
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	
-	if (AnimInstance && HitReactMontage)
-	{
-		AnimInstance->Montage_Play(HitReactMontage);
-		AnimInstance->Montage_JumpToSection(SectionName, HitReactMontage);
-	}
-}
+//Patrolling
 
 bool AEnemy::InTargetRange(AActor* Target, double AcceptanceRadius)
 {
@@ -246,22 +272,6 @@ void AEnemy::PatrolTimerFinish()
 	MoveToTarget(PatrolTarget);
 }
 
-void AEnemy::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (EnemyState != EEnemyState::EES_Patrolling)
-	{ 
-		CombatTargetCheck();
-	}
-
-	else
-	{
-		PatrolTargetCheck();
-	}
-
-}
-
 void AEnemy::PatrolTargetCheck()
 {
 	if (InTargetRange(PatrolTarget, ActivePatrolRange))
@@ -305,11 +315,5 @@ void AEnemy::CombatTargetCheck()
 		EnemyState = EEnemyState::EES_Attacking;
 		//Attack target
 	}
-}
-
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 

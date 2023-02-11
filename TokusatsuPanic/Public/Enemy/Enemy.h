@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "Characters/CharacterBase.h"
 #include "Interfaces/HitInterface.h"
 #include "Characters/CharacterEnums.h"
 #include "Enemy.generated.h"
@@ -15,7 +15,7 @@ class AAIController;
 class UPawnSensingComponent;
 
 UCLASS()
-class TOKUSATSUPANIC_API AEnemy : public ACharacter, public IHitInterface
+class TOKUSATSUPANIC_API AEnemy : public ACharacterBase, public IHitInterface
 {
 	GENERATED_BODY()
 
