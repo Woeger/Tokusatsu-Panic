@@ -19,7 +19,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void GetHit(const FVector& Impact) override;
+	virtual void GetHit_Implementation(const FVector& Impact);
 
 protected:
 	virtual void BeginPlay() override;

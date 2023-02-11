@@ -77,7 +77,7 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 //Damage
 
-void AEnemy::GetHit(const FVector& Impact)
+void AEnemy::GetHit_Implementation(const FVector& Impact)
 {
 	if (HealthBarComponent)
 	{

@@ -26,7 +26,7 @@ public:
 	void CombatTargetCheck();
 
 	//Damage
-	virtual void GetHit(const FVector& Impact) override;
+	virtual void GetHit_Implementation(const FVector& Impact) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:

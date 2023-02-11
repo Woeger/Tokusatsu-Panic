@@ -38,7 +38,6 @@ protected:
 
 	//Damage
 	virtual void Death();
-	virtual void GetHit(const FVector& Impact) override;
 	void DirectionalHitReact(const FVector& Impact);
 
 	//Montages
@@ -55,6 +54,6 @@ protected:
 	UAnimMontage* DeathMontage;
 
 	//Components
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UAttributeComponent* Attributes;
 };

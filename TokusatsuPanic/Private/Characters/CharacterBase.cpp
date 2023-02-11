@@ -56,10 +56,6 @@ void ACharacterBase::Death()
 {
 }
 
-void ACharacterBase::GetHit(const FVector& Impact)
-{
-}
-
 void ACharacterBase::DirectionalHitReact(const FVector& Impact)
 {
 	//Obtain vectors needed for dot product
