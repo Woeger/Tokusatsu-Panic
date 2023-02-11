@@ -4,80 +4,57 @@
 
 #include "CoreMinimal.h"
 #include "Characters/CharacterBase.h"
-#include "Interfaces/HitInterface.h"
 #include "Characters/CharacterEnums.h"
 #include "Enemy.generated.h"
 
-class UAnimMontage;
-class UAttributeComponent;
 class UHealthBarComponent;
 class AAIController;
 class UPawnSensingComponent;
 
 UCLASS()
-class TOKUSATSUPANIC_API AEnemy : public ACharacterBase, public IHitInterface
+class TOKUSATSUPANIC_API AEnemy : public ACharacterBase
 {
 	GENERATED_BODY()
 
 public:
 	AEnemy();
-
 	virtual void Tick(float DeltaTime) override;
-
-	void PatrolTargetCheck();
-
-	void CombatTargetCheck();
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//Patrolling
+	void PatrolTargetCheck();
+	void CombatTargetCheck();
+
+	//Damage
 	virtual void GetHit(const FVector& Impact) override;
-
-	void DirectionalHitReact(const FVector& Impact);
-
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	virtual void BeginPlay() override;
 
-	void Death();
+	//Damage
+	virtual void Death() override;
 
-	void PlayHitReactMontage(FName SectionName);
-
+	//Patrolling
 	bool InTargetRange(AActor* Target, double AcceptanceRadius);
-
 	void MoveToTarget(AActor* Target);
-
 	UFUNCTION()
 	void OnSeen(APawn* Target);
-
 	AActor* DecidePatrolTarget();
 
+	//Montages
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
-
 	//Components
-
-	UPROPERTY(VisibleAnywhere)
-	UAttributeComponent* Attributes;
-
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensingComponent;
 
-	//Montages
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* DeathMontage;
-
 	//Navigation
-
 	UPROPERTY()
 	AActor* CombatTarget;
 

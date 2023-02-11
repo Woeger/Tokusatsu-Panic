@@ -4,12 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/HitInterface.h"
 #include "CharacterBase.generated.h"
 
 class AWeapon;
+class UAnimMontage;
+class UAttributeComponent;
 
 UCLASS()
-class TOKUSATSUPANIC_API ACharacterBase : public ACharacter
+class TOKUSATSUPANIC_API ACharacterBase : public ACharacter, public IHitInterface
 {
 	GENERATED_BODY()
 
@@ -24,17 +27,34 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	//Attacking
 	virtual bool CanAttack();
 	virtual void Attack();
-
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
 
-	virtual void PlayAttackMontage();
-	
 	UPROPERTY(VisibleAnywhere)
 	AWeapon* EquippedWeapon;
 
+	//Damage
+	virtual void Death();
+	virtual void GetHit(const FVector& Impact) override;
+	void DirectionalHitReact(const FVector& Impact);
+
+	//Montages
+	virtual void PlayAttackMontage();
+	void PlayHitReactMontage(FName SectionName);
+
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* HitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* DeathMontage;
+
+	//Components
+	UPROPERTY(VisibleAnywhere)
+	UAttributeComponent* Attributes;
 };

@@ -11,7 +11,6 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
-class AWeapon;
 
 UCLASS()
 class TOKUSATSUPANIC_API APlayerCharacter : public ACharacterBase
@@ -54,6 +53,7 @@ protected:
 	virtual bool CanAttack() override;
 	virtual void AttackEnd() override;
 
+	//Equipping
 	bool CanUnarm();
 	bool CanArm();
 
@@ -71,6 +71,7 @@ protected:
 
 private:
 
+	//Camera
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;
 
