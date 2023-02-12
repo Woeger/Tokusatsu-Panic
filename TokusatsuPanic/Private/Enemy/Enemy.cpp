@@ -2,15 +2,14 @@
 
 
 #include "Enemy/Enemy.h"
-#include "TokusatsuPanic/DebugMacro.h"
+#include "AIController.h"
+#include "HUD/HealthBarComponent.h"
+#include "Items/Weapons/Weapon.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/AttributeComponent.h"
-#include "HUD/HealthBarComponent.h"
-#include "AIController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
-#include "Items/Weapons/Weapon.h"
 
 // Sets default values
 AEnemy::AEnemy()

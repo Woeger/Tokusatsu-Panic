@@ -18,11 +18,7 @@ class TOKUSATSUPANIC_API ACharacterBase : public ACharacter, public IHitInterfac
 
 public:
 	ACharacterBase();
-
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollision(ECollisionEnabled::Type CollisionEnabled);
 
 protected:
 	virtual void BeginPlay() override;
@@ -30,8 +26,12 @@ protected:
 	//Attacking
 	virtual void Attack();
 	virtual bool CanAttack();
+
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollision(ECollisionEnabled::Type CollisionEnabled);
 
 	UPROPERTY(VisibleAnywhere)
 	AWeapon* EquippedWeapon;

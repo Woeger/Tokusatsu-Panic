@@ -20,10 +20,6 @@ public:
 	AEnemy();
 	virtual void Tick(float DeltaTime) override;
 
-	//Patrolling
-	void PatrolTargetCheck();
-	void CombatTargetCheck();
-
 	//Damage
 	virtual void GetHit_Implementation(const FVector& Impact) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -44,13 +40,6 @@ protected:
 	virtual void Attack() override;
 	virtual bool CanAttack() override;
 	virtual void AttackEnd() override;
-
-	//Patrolling
-	bool InTargetRange(AActor* Target, double AcceptanceRadius);
-	void MoveToTarget(AActor* Target);
-	UFUNCTION()
-	void OnSeen(APawn* Target);
-	AActor* DecidePatrolTarget();
 
 	//Montages
 	UPROPERTY(BlueprintReadOnly)
@@ -79,15 +68,20 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Attacking")
 	float AttackDelayMax = 1.f;
 
-	//Navigation
+	//AI Navigation
 	FTimerHandle PatrolTimer;
 	void PatrolTimerFinish();
 	void LoseInterest();
 	void BeginPatrol();
 	void BeginChase();
+	void PatrolTargetCheck();
+	void CombatTargetCheck();
+	void MoveToTarget(AActor* Target);
+	bool InTargetRange(AActor* Target, double AcceptanceRadius);
+	AActor* DecidePatrolTarget();
 
-	UPROPERTY()
-	AActor* CombatTarget;
+	UFUNCTION()
+	void OnSeen(APawn* Target);
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	double ActiveCombatRange = 1150.f;
@@ -109,6 +103,9 @@ private:
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	AActor* PatrolTarget;
+
+	UPROPERTY()
+	AActor* CombatTarget;
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;

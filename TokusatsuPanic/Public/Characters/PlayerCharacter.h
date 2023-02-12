@@ -86,6 +86,8 @@ private:
 
 	void CheckJump();
 
+	//Equipping
+
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
