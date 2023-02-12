@@ -18,15 +18,14 @@ class TOKUSATSUPANIC_API APlayerCharacter : public ACharacterBase
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	APlayerCharacter();
-
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//Damage
+	virtual void GetHit_Implementation(const FVector& Impact) override;
+	
+	//Jumping
 	virtual void Landed(const FHitResult& Hit) override;
 
 //Section for getters/setters

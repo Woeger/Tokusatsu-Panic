@@ -33,7 +33,6 @@ APlayerCharacter::APlayerCharacter()
 
 }
 
-// Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -41,7 +40,17 @@ void APlayerCharacter::BeginPlay()
 	Tags.Add(FName("PlayerCharacter"));
 }
 
-//Forward/Back movement
+void APlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (jumping)
+	{
+		Jump();
+	}
+}
+
+//Movement
 void APlayerCharacter::MoveForward(float Value)
 {
 
@@ -58,7 +67,6 @@ void APlayerCharacter::MoveForward(float Value)
 
 }
 
-//Left/Right movement
 void APlayerCharacter::Strafe(float Value)
 {
 
@@ -75,7 +83,6 @@ void APlayerCharacter::Strafe(float Value)
 
 }
 
-//Turning
 void APlayerCharacter::TurnYaw(float Value)
 {
 	AddControllerYawInput(Value);
@@ -148,6 +155,11 @@ void APlayerCharacter::FinishEquip()
 	ActionState = EActionState::EAS_Idle;
 }
 
+//Damage
+void APlayerCharacter::GetHit_Implementation(const FVector& Impact)
+{
+}
+
 
 //Attacking
 void APlayerCharacter::Attack()
@@ -202,15 +214,11 @@ void APlayerCharacter::CheckJump()
 	}
 }
 
-// Called every frame
-void APlayerCharacter::Tick(float DeltaTime)
+void APlayerCharacter::Landed(const FHitResult& Hit)
 {
-	Super::Tick(DeltaTime);
+	Super::Landed(Hit);
 
-	if (jumping)
-	{
-		Jump();
-	}
+	jumpCount = 0;
 }
 
 // Called to bind functionality to input
@@ -233,12 +241,5 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	//Attack Bindings
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &APlayerCharacter::Attack);
-}
-
-void APlayerCharacter::Landed(const FHitResult& Hit)
-{
-	Super::Landed(Hit);
-
-	jumpCount = 0;
 }
 

@@ -19,10 +19,11 @@ class TOKUSATSUPANIC_API AWeapon : public AItem
 public:
 	AWeapon();
 
+	//Equipping
 	void Equip(USceneComponent* InParent, FName InSocketName, APawn* InInstigator);
-
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 
+	//Hitting
 	TArray<AActor*> IgnoreActors;
 
 //Getters/Setters
@@ -33,24 +34,38 @@ protected:
 
 	virtual void BeginPlay();
 
+	//Overlaps
 	virtual void CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 	virtual void CollisionSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 	UFUNCTION()
 	void OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void ExecuteGetHit(FHitResult& Hit);
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateFields(const FVector& Location);
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	UBoxComponent* WeaponHitbox;
+
+	//Box Tracing
+	void BoxTrace(FHitResult& Hit);
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Parameters")
+	FVector BoxTraceExtent = FVector(5.f);
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Parameters")
+	bool bShowDebugBox = true;
 
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* StartHitTrace;
 
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* EndHitTrace;
+
+	//Weapon properties
+	UPROPERTY(VisibleAnywhere)
+	UBoxComponent* WeaponHitbox;
 
 	UPROPERTY(EditAnywhere)
 	float Damage = 20.f;
