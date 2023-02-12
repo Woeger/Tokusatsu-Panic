@@ -27,11 +27,6 @@ void ACharacterBase::Tick(float DeltaTime)
 
 //Attacking
 
-bool ACharacterBase::CanAttack()
-{
-	return false;
-}
-
 void ACharacterBase::Attack()
 {
 }
@@ -51,6 +46,14 @@ void ACharacterBase::SetWeaponCollision(ECollisionEnabled::Type CollisionEnabled
 }
 
 //Damage
+
+void ACharacterBase::HandleDamage(float DamageAmount)
+{
+	if (Attributes)
+	{
+		Attributes->TakeDamage(DamageAmount);
+	}
+}
 
 void ACharacterBase::Death()
 {
@@ -104,6 +107,30 @@ void ACharacterBase::DirectionalHitReact(const FVector& Impact)
 
 void ACharacterBase::PlayAttackMontage()
 {
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && AttackMontage)
+	{
+		AnimInstance->Montage_Play(AttackMontage);
+	}
+
+	const int32 RandomAttack = FMath::RandRange(1, 3);
+	FName SectionName = FName();
+
+	switch (RandomAttack)
+	{
+	case 1:
+		SectionName = FName("Attack1");
+		break;
+	case 2:
+		SectionName = FName("Attack2");
+		break;
+	case 3:
+		SectionName = FName("Attack3");
+		break;
+	}
+
+	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 }
 
 void ACharacterBase::PlayHitReactMontage(FName SectionName)

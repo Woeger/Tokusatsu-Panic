@@ -50,8 +50,8 @@ protected:
 
 	//Attacking
 	virtual void Attack() override;
-	virtual bool CanAttack() override;
 	virtual void AttackEnd() override;
+	bool CanAttack();
 
 	//Equipping
 	bool CanUnarm();
@@ -66,7 +66,6 @@ protected:
 	void FinishEquip();
 
 	//Montage Functions
-	virtual void PlayAttackMontage() override;
 	void PlayEquipMontage(FName SectionName);
 
 private:

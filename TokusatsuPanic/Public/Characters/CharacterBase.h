@@ -28,7 +28,6 @@ protected:
 	virtual void BeginPlay() override;
 
 	//Attacking
-	virtual bool CanAttack();
 	virtual void Attack();
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
@@ -37,6 +36,7 @@ protected:
 	AWeapon* EquippedWeapon;
 
 	//Damage
+	virtual void HandleDamage(float DamageAmount);
 	virtual void Death();
 	void DirectionalHitReact(const FVector& Impact);
 

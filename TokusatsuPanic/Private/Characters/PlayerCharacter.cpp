@@ -170,35 +170,6 @@ bool APlayerCharacter::CanAttack()
 }
 
 //Montages
-
-void APlayerCharacter::PlayAttackMontage()
-{
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-
-	if (AnimInstance && AttackMontage)
-	{
-		AnimInstance->Montage_Play(AttackMontage);
-	}
-
-	const int32 RandomAttack = FMath::RandRange(1, 3);
-	FName SectionName = FName();
-
-	switch (RandomAttack)
-	{
-	case 1:
-		SectionName = FName("Attack1");
-		break;
-	case 2:
-		SectionName = FName("Attack2");
-		break;
-	case 3:
-		SectionName = FName("Attack3");
-		break;
-	}
-
-	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
-}
-
 void APlayerCharacter::PlayEquipMontage(FName SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
