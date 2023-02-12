@@ -79,6 +79,7 @@ void AEnemy::BeginPlay()
 }
 
 //Components
+
 void AEnemy::ToggleHealthVisibility(bool visibility)
 {
 	if (HealthBarComponent)
@@ -91,7 +92,24 @@ void AEnemy::ToggleHealthVisibility(bool visibility)
 
 void AEnemy::Attack()
 {
+	EnemyState = EEnemyState::EES_CombatEngaged;
 	PlayAttackMontage();
+}
+
+bool AEnemy::CanAttack()
+{
+	bool bCanAttack = InTargetRange(CombatTarget, AttackRange) &&
+		EnemyState != EEnemyState::EES_Attacking &&
+		EnemyState != EEnemyState::EES_CombatEngaged &&
+		EnemyState != EEnemyState::EES_Dead;
+
+	return bCanAttack;
+}
+
+void AEnemy::AttackEnd()
+{
+	EnemyState = EEnemyState::EES_None;
+	CombatTargetCheck();
 }
 
 void AEnemy::BeginAttack()
@@ -284,7 +302,7 @@ void AEnemy::CombatTargetCheck()
 	}
 
 	//Inside of attack range, attack target
-	else if (InTargetRange(CombatTarget, AttackRange) && EnemyState != EEnemyState::EES_Attacking)
+	else if (CanAttack())
 	{
 		BeginAttack();
 	}

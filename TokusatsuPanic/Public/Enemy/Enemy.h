@@ -42,6 +42,8 @@ protected:
 
 	//Attacking
 	virtual void Attack() override;
+	virtual bool CanAttack() override;
+	virtual void AttackEnd() override;
 
 	//Patrolling
 	bool InTargetRange(AActor* Target, double AcceptanceRadius);
@@ -88,7 +90,7 @@ private:
 	AActor* CombatTarget;
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	double ActiveCombatRange = 500.f;
+	double ActiveCombatRange = 1150.f;
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	double AttackRange = 160.f;
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")

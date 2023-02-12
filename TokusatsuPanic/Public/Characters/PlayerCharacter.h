@@ -51,7 +51,7 @@ protected:
 	//Attacking
 	virtual void Attack() override;
 	virtual void AttackEnd() override;
-	bool CanAttack();
+	virtual bool CanAttack() override;
 
 	//Equipping
 	bool CanUnarm();

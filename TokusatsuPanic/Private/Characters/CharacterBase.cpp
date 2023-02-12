@@ -31,6 +31,11 @@ void ACharacterBase::Attack()
 {
 }
 
+bool ACharacterBase::CanAttack()
+{
+	return false;
+}
+
 void ACharacterBase::AttackEnd()
 {
 }

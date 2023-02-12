@@ -29,6 +29,7 @@ protected:
 
 	//Attacking
 	virtual void Attack();
+	virtual bool CanAttack();
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
 
