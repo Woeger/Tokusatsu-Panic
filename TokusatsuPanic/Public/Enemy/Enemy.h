@@ -37,6 +37,8 @@ protected:
 	virtual void Death() override;
 	UPROPERTY(BlueprintReadOnly)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+	UPROPERTY(EditAnywhere)
+	float LifeSpan = 15.f;
 
 	//Attacking
 	virtual void Attack() override;
@@ -50,7 +52,7 @@ protected:
 
 	//Montages
 	UPROPERTY(BlueprintReadOnly)
-	EDeathPose DeathPose;
+	TEnumAsByte<EDeathPose> DeathPose;
 
 private:
 	//Components

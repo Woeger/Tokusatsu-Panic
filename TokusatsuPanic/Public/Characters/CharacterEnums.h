@@ -17,11 +17,13 @@ enum class EActionState : uint8
 };
 
 UENUM(BlueprintType)
-enum class EDeathPose : uint8
+enum EDeathPose
 {
 	EDP_Dead1 UMETA(DisplayName = "Dead 1"),
 	EDP_Dead2 UMETA(DisplayName = "Dead 2"),
-	EDP_Dead3 UMETA(DisplayName = "Dead 3")
+	EDP_Dead3 UMETA(DisplayName = "Dead 3"),
+
+	EDP_MAX UMETA(DisplayName = "Max")
 };
 
 UENUM(BlueprintType)

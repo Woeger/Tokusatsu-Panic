@@ -105,32 +105,33 @@ void ACharacterBase::DirectionalHitReact(const FVector& Impact)
 
 //Montages
 
-void ACharacterBase::PlayAttackMontage()
+void ACharacterBase::PlayMontageSection(UAnimMontage* Montage, const FName& SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-	if (AnimInstance && AttackMontage)
+	if (AnimInstance && Montage)
 	{
-		AnimInstance->Montage_Play(AttackMontage);
+		AnimInstance->Montage_Play(Montage);
+		AnimInstance->Montage_JumpToSection(SectionName, Montage);
 	}
+}
 
-	const int32 RandomAttack = FMath::RandRange(1, 3);
-	FName SectionName = FName();
+int32 ACharacterBase::PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames)
+{
+	if (SectionNames.Num() <= 0) return -1;
+	const int32 SectionSelection = FMath::RandRange(0, SectionNames.Num() - 1);
+	PlayMontageSection(Montage, SectionNames[SectionSelection]);
+	return SectionSelection;
+}
 
-	switch (RandomAttack)
-	{
-	case 1:
-		SectionName = FName("Attack1");
-		break;
-	case 2:
-		SectionName = FName("Attack2");
-		break;
-	case 3:
-		SectionName = FName("Attack3");
-		break;
-	}
+int32 ACharacterBase::PlayAttackMontage()
+{
+	return PlayRandomMontageSection(AttackMontage, AttackMontageSections);
+}
 
-	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+int32 ACharacterBase::PlayDeathMontage()
+{
+	return PlayRandomMontageSection(DeathMontage, DeathMontageSections);
 }
 
 void ACharacterBase::PlayHitReactMontage(FName SectionName)

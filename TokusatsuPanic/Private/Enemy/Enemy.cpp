@@ -147,38 +147,23 @@ void AEnemy::Destroyed()
 
 void AEnemy::Death()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	EnemyState = EEnemyState::EES_Dead;
 
-	if (AnimInstance && DeathMontage)
+	GetWorldTimerManager().ClearTimer(AttackTimer);
+
+	int32 Selection = PlayDeathMontage();
+	TEnumAsByte<EDeathPose> Pose(Selection);
+	
+	if (Pose < EDeathPose::EDP_MAX)
 	{
-		AnimInstance->Montage_Play(DeathMontage);
-
-		const int32 RandomDeath = FMath::RandRange(1, 3);
-		FName SectionName = FName();
-
-		switch (RandomDeath)
-		{
-		case 1:
-			SectionName = FName("Death1");
-			DeathPose = EDeathPose::EDP_Dead1;
-			break;
-		case 2:
-			SectionName = FName("Death2");
-			DeathPose = EDeathPose::EDP_Dead2;
-			break;
-		case 3:
-			SectionName = FName("Death3");
-			DeathPose = EDeathPose::EDP_Dead3;
-			break;
-		}
-
-		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+		DeathPose = Pose;
 	}
 
 	ToggleHealthVisibility(false);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SetLifeSpan(15.f);
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	SetLifeSpan(LifeSpan);
 
 }
 
