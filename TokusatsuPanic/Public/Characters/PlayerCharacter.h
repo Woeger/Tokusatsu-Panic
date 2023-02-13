@@ -52,6 +52,10 @@ protected:
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
 
+	//Damage
+	UFUNCTION(BlueprintCallable)
+	void EndHit();
+
 	//Equipping
 	bool CanUnarm();
 	bool CanArm();
@@ -60,7 +64,6 @@ protected:
 	void Unarm();
 	UFUNCTION(BlueprintCallable)
 	void Arm();
-
 	UFUNCTION(BlueprintCallable)
 	void FinishEquip();
 

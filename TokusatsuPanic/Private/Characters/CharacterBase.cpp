@@ -64,6 +64,19 @@ void ACharacterBase::Death()
 {
 }
 
+void ACharacterBase::GetHit_Implementation(const FVector& Impact)
+{
+	if (Attributes && Attributes->IsAlive())
+	{
+		DirectionalHitReact(Impact);
+	}
+
+	else
+	{
+		Death();
+	}
+}
+
 void ACharacterBase::DirectionalHitReact(const FVector& Impact)
 {
 	//Obtain vectors needed for dot product

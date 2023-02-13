@@ -166,10 +166,19 @@ void APlayerCharacter::FinishEquip()
 //Damage
 void APlayerCharacter::GetHit_Implementation(const FVector& Impact)
 {
+	DirectionalHitReact(Impact); //To Fix: Why does Super not work here?
+
+	ActionState = EActionState::EAS_Hit;
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(1, 25.f, FColor::Cyan, TEXT("Got hit!"));
 	}
+}
+
+void APlayerCharacter::EndHit()
+{
+	ActionState = EActionState::EAS_Idle;
 }
 
 
@@ -209,19 +218,22 @@ void APlayerCharacter::PlayEquipMontage(FName SectionName)
 //Double jump
 void APlayerCharacter::CheckJump()
 {
-	if (jumping)
+	if (ActionState == EActionState::EAS_Idle)
 	{
-		jumping = false;
-	}
-
-	else
-	{
-		jumping = true;
-		jumpCount++;
-
-		if (jumpCount == 2)
+		if (jumping)
 		{
-			LaunchCharacter(FVector(0, 0, 500), false, true);
+			jumping = false;
+		}
+
+		else
+		{
+			jumping = true;
+			jumpCount++;
+
+			if (jumpCount == 2)
+			{
+				LaunchCharacter(FVector(0, 0, 500), false, true);
+			}
 		}
 	}
 }

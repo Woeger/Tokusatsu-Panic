@@ -134,17 +134,14 @@ void AEnemy::HandleDamage(float DamageAmount)
 
 void AEnemy::GetHit_Implementation(const FVector& Impact)
 {
-	ToggleHealthVisibility(true);
+	Super::GetHit_Implementation(Impact);
 
-	if (Attributes && Attributes->IsAlive())
+	if (EnemyState != EEnemyState::EES_Dead)
 	{
-		DirectionalHitReact(Impact);
+		ToggleHealthVisibility(true);
 	}
 
-	else
-	{
-		Death();
-	}
+	GetWorldTimerManager().ClearTimer(PatrolTimer);
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -167,7 +164,7 @@ void AEnemy::Destroyed()
 void AEnemy::Death()
 {
 	EnemyState = EEnemyState::EES_Dead;
-
+	ToggleHealthVisibility(false);
 	GetWorldTimerManager().ClearTimer(AttackTimer);
 
 	int32 Selection = PlayDeathMontage();
@@ -178,10 +175,9 @@ void AEnemy::Death()
 		DeathPose = Pose;
 	}
 
-	ToggleHealthVisibility(false);
-
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+	SetWeaponCollision(ECollisionEnabled::NoCollision);
 	SetLifeSpan(LifeSpan);
 
 }
