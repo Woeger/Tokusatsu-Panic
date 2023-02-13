@@ -4,11 +4,12 @@
 #include "Characters/PlayerCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
-#include "Components/BoxComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -27,6 +28,13 @@ APlayerCharacter::APlayerCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(CameraBoom);
+
+	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
+
 
 	jumping = false;
 	jumpCount = 0;
@@ -100,7 +108,7 @@ void APlayerCharacter::EKeyPress()
 
 	if (OverlappingWeapon)
 	{
-		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this);
+		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
 		EquipState = EEquippedState::EES_Equipped1H;
 		OverlappingItem = nullptr;
 		EquippedWeapon = OverlappingWeapon;
@@ -158,6 +166,10 @@ void APlayerCharacter::FinishEquip()
 //Damage
 void APlayerCharacter::GetHit_Implementation(const FVector& Impact)
 {
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 25.f, FColor::Cyan, TEXT("Got hit!"));
+	}
 }
 
 

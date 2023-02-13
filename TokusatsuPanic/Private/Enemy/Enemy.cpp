@@ -57,12 +57,14 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Tags.Add(FName("EnemyCharacter"));
+
 	UWorld* World = GetWorld();
 
 	if (World && WeaponClass)
 	{
 		AWeapon* Weapon = World->SpawnActor<AWeapon>(WeaponClass);
-		Weapon->Equip(GetMesh(), FName("RightHandSocket"), this);
+		Weapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
 		EquippedWeapon = Weapon;
 	}
 

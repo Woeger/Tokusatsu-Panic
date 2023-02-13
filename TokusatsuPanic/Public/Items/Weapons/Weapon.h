@@ -20,7 +20,7 @@ public:
 	AWeapon();
 
 	//Equipping
-	void Equip(USceneComponent* InParent, FName InSocketName, APawn* InInstigator);
+	void Equip(USceneComponent* InParent, FName InSocketName, AActor* InOwner, APawn* InInstigator);
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 
 	//Hitting
@@ -37,11 +37,11 @@ protected:
 	//Overlaps
 	virtual void CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 	virtual void CollisionSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	void ExecuteGetHit(FHitResult& Hit);
+	bool ActorIsSame(AActor* OtherActor);
 
 	UFUNCTION()
 	void OnHitboxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	void ExecuteGetHit(FHitResult& Hit);
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateFields(const FVector& Location);
