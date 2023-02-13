@@ -164,16 +164,12 @@ void APlayerCharacter::FinishEquip()
 }
 
 //Damage
-void APlayerCharacter::GetHit_Implementation(const FVector& Impact)
+void APlayerCharacter::GetHit_Implementation(const FVector& Impact, AActor* HitTaker)
 {
-	DirectionalHitReact(Impact); //To Fix: Why does Super not work here?
-
+	//Super::GetHit_Implementation(Impact, HitTaker); - To Fix: Why does Super not work here?
+	DirectionalHitReact(HitTaker->GetTargetLocation());
+	SetWeaponCollision(ECollisionEnabled::NoCollision);
 	ActionState = EActionState::EAS_Hit;
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 25.f, FColor::Cyan, TEXT("Got hit!"));
-	}
 }
 
 void APlayerCharacter::EndHit()

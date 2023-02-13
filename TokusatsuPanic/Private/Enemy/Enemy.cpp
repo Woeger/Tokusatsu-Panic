@@ -132,9 +132,9 @@ void AEnemy::HandleDamage(float DamageAmount)
 	}
 }
 
-void AEnemy::GetHit_Implementation(const FVector& Impact)
+void AEnemy::GetHit_Implementation(const FVector& Impact, AActor* HitTaker)
 {
-	Super::GetHit_Implementation(Impact);
+	Super::GetHit_Implementation(Impact, HitTaker);
 
 	if (EnemyState != EEnemyState::EES_Dead)
 	{
@@ -292,7 +292,7 @@ void AEnemy::CombatTargetCheck()
 	}
 
 	//Outside of attack range, continue to chase
-	else if (!InTargetRange(CombatTarget, AttackRange) && EnemyState != EEnemyState::EES_Chasing)
+	else if (!InTargetRange(CombatTarget, AttackRange) && EnemyState != EEnemyState::EES_Chasing && EnemyState != EEnemyState::EES_CombatEngaged)
 	{
 		GetWorldTimerManager().ClearTimer(AttackTimer);
 		BeginChase();

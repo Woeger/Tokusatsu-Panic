@@ -21,7 +21,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	//Damage
-	virtual void GetHit_Implementation(const FVector& Impact) override;
+	virtual void GetHit_Implementation(const FVector& Impact, AActor* HitTaker) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void Destroyed() override;
 

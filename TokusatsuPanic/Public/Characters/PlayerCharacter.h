@@ -23,7 +23,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	//Damage
-	virtual void GetHit_Implementation(const FVector& Impact) override;
+	virtual void GetHit_Implementation(const FVector& Impact, AActor* HitTaker) override;
 	
 	//Jumping
 	virtual void Landed(const FHitResult& Hit) override;

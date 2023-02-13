@@ -39,7 +39,7 @@ protected:
 	//Damage
 	virtual void HandleDamage(float DamageAmount);
 	virtual void Death();
-	virtual void GetHit_Implementation(const FVector& Impact) override;
+	virtual void GetHit_Implementation(const FVector& Impact, AActor* HitTaker) override;
 	void DirectionalHitReact(const FVector& Impact);
 
 	//Montages

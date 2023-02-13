@@ -22,5 +22,5 @@ class TOKUSATSUPANIC_API IHitInterface
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	void GetHit(const FVector& Impact);
+	void GetHit(const FVector& Impact, AActor* HitTaker);
 };

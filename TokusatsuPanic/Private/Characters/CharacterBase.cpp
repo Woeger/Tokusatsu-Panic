@@ -64,11 +64,11 @@ void ACharacterBase::Death()
 {
 }
 
-void ACharacterBase::GetHit_Implementation(const FVector& Impact)
+void ACharacterBase::GetHit_Implementation(const FVector& Impact, AActor* HitTaker)
 {
-	if (Attributes && Attributes->IsAlive())
+	if (Attributes && Attributes->IsAlive() && HitTaker)
 	{
-		DirectionalHitReact(Impact);
+		DirectionalHitReact(HitTaker->GetTargetLocation());
 	}
 
 	else
