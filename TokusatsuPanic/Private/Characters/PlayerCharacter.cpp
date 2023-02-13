@@ -6,7 +6,10 @@
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/AttributeComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "HUD/PlayerHUD.h"
+#include "HUD/PlayerOverlay.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
@@ -46,6 +49,25 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	Tags.Add(FName("PlayerCharacter"));
+
+	//Get HUD
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	
+	if (PlayerController)
+	{
+		APlayerHUD* PlayerHUD = Cast<APlayerHUD>(PlayerController->GetHUD());
+
+		if (PlayerHUD)
+		{
+			PlayerOverlay = PlayerHUD->GetOverlay();
+
+			if (PlayerOverlay && Attributes)
+			{
+				PlayerOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+				PlayerOverlay->SetStaminaBarPercent(1.f);
+			}
+		}
+	}
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -172,6 +194,13 @@ void APlayerCharacter::GetHit_Implementation(const FVector& Impact, AActor* HitT
 	ActionState = EActionState::EAS_Hit;
 }
 
+float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	HandleDamage(DamageAmount);
+	PlayerOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+	return DamageAmount;
+}
+
 void APlayerCharacter::EndHit()
 {
 	ActionState = EActionState::EAS_Idle;
@@ -214,22 +243,19 @@ void APlayerCharacter::PlayEquipMontage(FName SectionName)
 //Double jump
 void APlayerCharacter::CheckJump()
 {
-	if (ActionState == EActionState::EAS_Idle)
+	if (jumping)
 	{
-		if (jumping)
-		{
-			jumping = false;
-		}
+		jumping = false;
+	}
 
-		else
-		{
-			jumping = true;
-			jumpCount++;
+	else
+	{
+		jumping = true;
+		jumpCount++;
 
-			if (jumpCount == 2)
-			{
-				LaunchCharacter(FVector(0, 0, 500), false, true);
-			}
+		if (jumpCount == 2)
+		{
+			LaunchCharacter(FVector(0, 0, 500), false, true);
 		}
 	}
 }

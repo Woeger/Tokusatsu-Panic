@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMontage;
+class UPlayerOverlay;
 
 UCLASS()
 class TOKUSATSUPANIC_API APlayerCharacter : public ACharacterBase
@@ -24,6 +25,7 @@ public:
 
 	//Damage
 	virtual void GetHit_Implementation(const FVector& Impact, AActor* HitTaker) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
 	//Jumping
 	virtual void Landed(const FHitResult& Hit) override;
@@ -71,6 +73,10 @@ protected:
 	void PlayEquipMontage(FName SectionName);
 
 private:
+
+	//Damage
+	UPROPERTY()
+	UPlayerOverlay* PlayerOverlay;
 
 	//Camera
 	UPROPERTY(VisibleAnywhere)
