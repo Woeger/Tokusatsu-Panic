@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/HitInterface.h"
+#include "Characters/CharacterEnums.h"
 #include "CharacterBase.generated.h"
 
 class AWeapon;
@@ -63,6 +64,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Montages")
 	TArray<FName> DeathMontageSections;
+
+	UPROPERTY(BlueprintReadOnly)
+	TEnumAsByte<EDeathPose> DeathPose;
 
 	//Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

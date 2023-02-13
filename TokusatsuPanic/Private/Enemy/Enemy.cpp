@@ -163,17 +163,11 @@ void AEnemy::Destroyed()
 
 void AEnemy::Death()
 {
+	Super::Death();
+
 	EnemyState = EEnemyState::EES_Dead;
 	ToggleHealthVisibility(false);
 	GetWorldTimerManager().ClearTimer(AttackTimer);
-
-	int32 Selection = PlayDeathMontage();
-	TEnumAsByte<EDeathPose> Pose(Selection);
-	
-	if (Pose < EDeathPose::EDP_MAX)
-	{
-		DeathPose = Pose;
-	}
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->bOrientRotationToMovement = false;

@@ -5,6 +5,7 @@
 #include "Items/Weapons/Weapon.h"
 #include "Components/BoxComponent.h"
 #include "Components/AttributeComponent.h"
+#include "Characters/CharacterEnums.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -62,6 +63,7 @@ void ACharacterBase::HandleDamage(float DamageAmount)
 
 void ACharacterBase::Death()
 {
+	PlayDeathMontage();
 }
 
 void ACharacterBase::GetHit_Implementation(const FVector& Impact, AActor* HitTaker)
@@ -149,7 +151,15 @@ int32 ACharacterBase::PlayAttackMontage()
 
 int32 ACharacterBase::PlayDeathMontage()
 {
-	return PlayRandomMontageSection(DeathMontage, DeathMontageSections);
+	int32 Selection = PlayRandomMontageSection(DeathMontage, DeathMontageSections);
+	TEnumAsByte<EDeathPose> Pose(Selection);
+
+	if (Pose < EDeathPose::EDP_MAX)
+	{
+		DeathPose = Pose;
+	}
+
+	return Selection;
 }
 
 void ACharacterBase::PlayHitReactMontage(FName SectionName)

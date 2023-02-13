@@ -188,10 +188,14 @@ void APlayerCharacter::FinishEquip()
 //Damage
 void APlayerCharacter::GetHit_Implementation(const FVector& Impact, AActor* HitTaker)
 {
-	//Super::GetHit_Implementation(Impact, HitTaker); - To Fix: Why does Super not work here?
-	DirectionalHitReact(HitTaker->GetTargetLocation());
+	Super::GetHit_Implementation(Impact, HitTaker);
 	SetWeaponCollision(ECollisionEnabled::NoCollision);
-	ActionState = EActionState::EAS_Hit;
+	
+	if (Attributes && Attributes->GetHealthPercent() > 0.f)
+	{
+		ActionState = EActionState::EAS_Hit;
+	}
+
 }
 
 float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -204,6 +208,12 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 void APlayerCharacter::EndHit()
 {
 	ActionState = EActionState::EAS_Idle;
+}
+
+void APlayerCharacter::Death()
+{
+	Super::Death();
+	ActionState = EActionState::EAS_Dead;
 }
 
 

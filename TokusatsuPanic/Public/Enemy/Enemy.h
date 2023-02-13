@@ -41,10 +41,6 @@ protected:
 	virtual bool CanAttack() override;
 	virtual void AttackEnd() override;
 
-	//Montages
-	UPROPERTY(BlueprintReadOnly)
-	TEnumAsByte<EDeathPose> DeathPose;
-
 private:
 	//Components
 	void ToggleHealthVisibility(bool visibility);

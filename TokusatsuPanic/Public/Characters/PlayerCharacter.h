@@ -57,6 +57,7 @@ protected:
 	//Damage
 	UFUNCTION(BlueprintCallable)
 	void EndHit();
+	virtual void Death() override;
 
 	//Equipping
 	bool CanUnarm();
