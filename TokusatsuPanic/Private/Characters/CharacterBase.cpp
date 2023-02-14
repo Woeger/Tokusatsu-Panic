@@ -63,6 +63,7 @@ void ACharacterBase::HandleDamage(float DamageAmount)
 
 void ACharacterBase::Death()
 {
+	Tags.Add(FName("Dead"));
 	PlayDeathMontage();
 }
 

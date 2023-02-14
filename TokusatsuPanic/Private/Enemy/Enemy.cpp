@@ -93,6 +93,12 @@ void AEnemy::ToggleHealthVisibility(bool visibility)
 
 void AEnemy::Attack()
 {
+	if (CombatTarget && CombatTarget->ActorHasTag(FName("Dead")))
+	{
+		CombatTarget = nullptr;
+		return;
+	}
+
 	EnemyState = EEnemyState::EES_CombatEngaged;
 	PlayAttackMontage();
 }

@@ -214,6 +214,7 @@ void APlayerCharacter::Death()
 {
 	Super::Death();
 	ActionState = EActionState::EAS_Dead;
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 
