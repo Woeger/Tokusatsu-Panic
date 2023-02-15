@@ -46,9 +46,8 @@ void ACharacterBase::SetWeaponCollision(ECollisionEnabled::Type CollisionEnabled
 	if (EquippedWeapon && EquippedWeapon->GetWeaponHitbox())
 	{
 		EquippedWeapon->GetWeaponHitbox()->SetCollisionEnabled(CollisionEnabled);
+		EquippedWeapon->IgnoreActors.Empty();
 	}
-
-	EquippedWeapon->IgnoreActors.Empty();
 }
 
 //Damage
