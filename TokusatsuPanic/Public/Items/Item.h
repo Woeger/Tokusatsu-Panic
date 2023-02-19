@@ -8,6 +8,7 @@
 
 class USphereComponent;
 
+//Item States
 enum class EItemState : uint8
 {
 	EIS_Floating,
@@ -20,39 +21,30 @@ class TOKUSATSUPANIC_API AItem : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AItem();
-
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//Trig variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
 	float Amplitude = 0.25f;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
 	float TimeConstant = 5.f;
-
 	UFUNCTION(BlueprintPure)
 	float TransformedSin();
-
 	UFUNCTION(BlueprintPure)
 	float TransformedCos();
 
-	template<typename T>
-	T Avg(T First, T Second);
-
+	//Item/Item State
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* ItemMesh;
-
 	EItemState ItemState = EItemState::EIS_Floating;
 
+	//Overlaps
 	UFUNCTION()
 	virtual void CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 	UFUNCTION()
 	virtual void CollisionSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
@@ -60,14 +52,7 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RunningTime;
-
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
 	
 };
-
-template<typename T>
-inline T AItem::Avg(T First, T Second)
-{
-	return (First + Second) / 2;
-}

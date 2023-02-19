@@ -6,10 +6,8 @@
 #include "Components/SphereComponent.h"
 #include "Characters/PlayerCharacter.h"
 
-// Sets default values
 AItem::AItem()
 {
- 	// Set this actor to call Tick() every frame.
 	PrimaryActorTick.bCanEverTick = true;
 
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
@@ -17,12 +15,11 @@ AItem::AItem()
 	ItemMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RootComponent = ItemMesh;
 
-	Sphere = CreateAbstractDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(GetRootComponent());
 
 }
 
-// Called when the game starts or when spawned
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
@@ -30,6 +27,21 @@ void AItem::BeginPlay()
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::CollisionSphereOverlap);
 	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::CollisionSphereOverlapEnd);
 }
+
+void AItem::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	RunningTime += DeltaTime;
+
+	if (ItemState == EItemState::EIS_Floating)
+	{
+		const float Z = TransformedSin();
+		AddActorWorldOffset(FVector(0.f, 0.f, Z));
+	}
+}
+
+//Floating/Trig behaviour
 
 float AItem::TransformedSin()
 {
@@ -41,6 +53,7 @@ float AItem::TransformedCos()
 	return Amplitude * FMath::Cos(RunningTime * TimeConstant);
 }
 
+//Overlaps
 void AItem::CollisionSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
 	const FHitResult& SweepResult)
 {
@@ -59,20 +72,6 @@ void AItem::CollisionSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, 
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->SetOverlappingItem(nullptr);
-	}
-}
-
-// Called every frame
-void AItem::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	RunningTime += DeltaTime;
-
-	if (ItemState == EItemState::EIS_Floating)
-	{
-		const float Z = TransformedSin();
-		AddActorWorldOffset(FVector(0.f, 0.f, Z));
 	}
 }
 

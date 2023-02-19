@@ -7,7 +7,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
-// Sets default values
 ADrone::ADrone()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,13 +29,19 @@ ADrone::ADrone()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
-// Called when the game starts or when spawned
 void ADrone::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
+void ADrone::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+//Movement
 void ADrone::MoveForward(float Value)
 {
 
@@ -56,13 +61,6 @@ void ADrone::TurnYaw(float Value)
 void ADrone::TurnPitch(float Value)
 {
 	AddControllerPitchInput(Value);
-}
-
-// Called every frame
-void ADrone::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input

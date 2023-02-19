@@ -17,30 +17,28 @@ class TOKUSATSUPANIC_API ADrone : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	ADrone();
-
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//Movement
 	void MoveForward(float Value);
 	void TurnYaw(float Value);
 	void TurnPitch(float Value);
 
 private:
+
+	//Components
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* Capsule;
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* DroneMesh;
 
+	//Camera
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
