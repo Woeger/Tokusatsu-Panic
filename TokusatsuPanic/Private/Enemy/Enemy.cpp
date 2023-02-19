@@ -153,7 +153,12 @@ void AEnemy::GetHit_Implementation(const FVector& Impact, AActor* HitTaker)
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	HandleDamage(DamageAmount);
-	CombatTarget = EventInstigator->GetPawn();
+
+	if (DamageCauser->ActorHasTag(FName("PlayerCharacter")))
+	{
+		CombatTarget = EventInstigator->GetPawn();
+	}
+
 	BeginChase();
 
 	return DamageAmount;
