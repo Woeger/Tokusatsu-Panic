@@ -74,6 +74,7 @@ private:
 	void CombatTargetCheck();
 	void MoveToTarget(AActor* Target);
 	bool InTargetRange(AActor* Target, double AcceptanceRadius);
+	bool CanChase();
 	AActor* DecidePatrolTarget();
 
 	UFUNCTION()

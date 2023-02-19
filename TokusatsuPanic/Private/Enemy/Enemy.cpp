@@ -243,6 +243,11 @@ void AEnemy::BeginChase()
 	MoveToTarget(CombatTarget);
 }
 
+bool AEnemy::CanChase()
+{
+	return EnemyState != EEnemyState::EES_Chasing && EnemyState != EEnemyState::EES_CombatEngaged;
+}
+
 AActor* AEnemy::DecidePatrolTarget()
 {
 	TArray<AActor*> ValidPatrolTargets;
@@ -297,7 +302,7 @@ void AEnemy::CombatTargetCheck()
 	}
 
 	//Outside of attack range, continue to chase
-	else if (!InTargetRange(CombatTarget, AttackRange) && EnemyState != EEnemyState::EES_Chasing && EnemyState != EEnemyState::EES_CombatEngaged)
+	else if (!InTargetRange(CombatTarget, AttackRange) && CanChase())
 	{
 		GetWorldTimerManager().ClearTimer(AttackTimer);
 		BeginChase();
