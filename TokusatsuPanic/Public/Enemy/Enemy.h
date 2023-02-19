@@ -60,9 +60,9 @@ private:
 
 	FTimerHandle AttackTimer;
 	UPROPERTY(EditAnywhere, Category = "Attacking")
-	float AttackDelayMin = 0.5f;
+	float AttackDelayMin = 0.1f;
 	UPROPERTY(EditAnywhere, Category = "Attacking")
-	float AttackDelayMax = 1.f;
+	float AttackDelayMax = 0.5f;
 
 	//AI Navigation
 	FTimerHandle PatrolTimer;
