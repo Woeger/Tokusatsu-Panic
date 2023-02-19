@@ -18,17 +18,39 @@ public:
 
 //Getters + Setters
 public:
-	void TakeDamage(float Damage);
+	//Health
 	float GetHealthPercent();
+	void TakeDamage(float Damage);
+	//Stamina
+	void UseStamina(float StaminaUsed);
+	void RegenStamina(float DeltaTime);
+	float GetStaminaPercent();
+	FORCEINLINE float GetStamina() const { return CurrentStamina; }
+	FORCEINLINE float GetDodgeCost() const { return DodgeCost; }
+
 	bool IsAlive();
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	//Health
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	float MaxHealth;
 
 	UPROPERTY(EditAnywhere, Category = "Attributes")
 	float CurrentHealth;
+
+	//Stamina
+	UPROPERTY(EditAnywhere, Category = "Attributes")
+	float MaxStamina;
+
+	UPROPERTY(EditAnywhere, Category = "Attributes")
+	float CurrentStamina;
+
+	UPROPERTY(EditAnywhere, Category = "Attributes")
+	float StaminaRefillRate;
+
+	UPROPERTY(EditAnywhere, Category = "Attributes")
+	float DodgeCost;
 };

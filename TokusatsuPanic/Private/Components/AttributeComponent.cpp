@@ -5,7 +5,7 @@
 
 UAttributeComponent::UAttributeComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UAttributeComponent::BeginPlay()
@@ -18,8 +18,8 @@ void UAttributeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-//Helper functions
 
+//Health
 void UAttributeComponent::TakeDamage(float Damage)
 {
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.f, MaxHealth);
@@ -28,6 +28,22 @@ void UAttributeComponent::TakeDamage(float Damage)
 float UAttributeComponent::GetHealthPercent()
 {
 	return CurrentHealth / MaxHealth;
+}
+
+//Stamina
+void UAttributeComponent::UseStamina(float StaminaUsed)
+{
+	CurrentStamina = FMath::Clamp(CurrentStamina - StaminaUsed, 0.f, MaxStamina);
+}
+
+void UAttributeComponent::RegenStamina(float DeltaTime)
+{
+	CurrentStamina = FMath::Clamp(CurrentStamina + StaminaRefillRate * DeltaTime, 0.f, MaxStamina);
+}
+
+float UAttributeComponent::GetStaminaPercent()
+{
+	return CurrentStamina / MaxStamina;
 }
 
 bool UAttributeComponent::IsAlive()

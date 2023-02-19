@@ -54,6 +54,12 @@ protected:
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
 
+	//Dodging
+	void Roll();
+	bool CanRoll();
+	UFUNCTION(BlueprintCallable)
+	void FinishRoll();
+
 	//Damage
 	UFUNCTION(BlueprintCallable)
 	void EndHit();
@@ -69,9 +75,6 @@ protected:
 	void Arm();
 	UFUNCTION(BlueprintCallable)
 	void FinishEquip();
-
-	//Montage Functions
-	void PlayEquipMontage(FName SectionName);
 
 private:
 
@@ -108,4 +111,6 @@ private:
 	//Animation montages
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* DodgeMontage;
 };

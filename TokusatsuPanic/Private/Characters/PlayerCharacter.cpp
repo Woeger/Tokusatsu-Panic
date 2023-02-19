@@ -74,6 +74,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (Attributes && PlayerOverlay)
+	{
+		Attributes->RegenStamina(DeltaTime);
+		PlayerOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	}
+
 	if (jumping)
 	{
 		Jump();
@@ -140,14 +146,14 @@ void APlayerCharacter::EKeyPress()
 	{
 		if (CanUnarm())
 		{
-			PlayEquipMontage(FName("Unequip"));
+			PlayMontageSection(EquipMontage, FName("Unequip"));
 			EquipState = EEquippedState::EES_Unequipped;
 			ActionState = EActionState::EAS_Equipping;
 		}
 
 		else if (CanArm())
 		{
-			PlayEquipMontage(FName("Equip"));
+			PlayMontageSection(EquipMontage, FName("Equip"));
 			EquipState = EEquippedState::EES_Equipped1H;
 			ActionState = EActionState::EAS_Equipping;
 		}
@@ -238,17 +244,30 @@ bool APlayerCharacter::CanAttack()
 	return ActionState == EActionState::EAS_Idle && EquipState != EEquippedState::EES_Unequipped;
 }
 
-//Montages
-void APlayerCharacter::PlayEquipMontage(FName SectionName)
+//Dodging
+void APlayerCharacter::Roll()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-
-	if (AnimInstance && EquipMontage)
+	if (CanRoll())
 	{
-		AnimInstance->Montage_Play(EquipMontage);
-		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
-	}
+		if (Attributes && PlayerOverlay)
+		{
+			Attributes->UseStamina(Attributes->GetDodgeCost());
+			PlayerOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+		}
 
+		PlayMontageSection(DodgeMontage, FName("Default"));
+		ActionState = EActionState::EAS_Roll;
+	}
+}
+
+bool APlayerCharacter::CanRoll()
+{
+	return ActionState == EActionState::EAS_Idle && Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
+}
+
+void APlayerCharacter::FinishRoll()
+{
+	ActionState = EActionState::EAS_Idle;
 }
 
 //Double jump
@@ -293,10 +312,13 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::CheckJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::CheckJump);
 
+	//Dodge Bindings
+	PlayerInputComponent->BindAction("Roll", IE_Pressed, this, &APlayerCharacter::Roll);
+
 	//Equip Bindings
-	PlayerInputComponent->BindAction("Equip", IE_Released, this, &APlayerCharacter::EKeyPress);
+	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &APlayerCharacter::EKeyPress);
 
 	//Attack Bindings
-	PlayerInputComponent->BindAction("Attack", IE_Released, this, &APlayerCharacter::Attack);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
 }
 
