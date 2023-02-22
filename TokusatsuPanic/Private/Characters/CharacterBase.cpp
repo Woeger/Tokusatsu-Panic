@@ -82,19 +82,19 @@ void ACharacterBase::GetHit_Implementation(const FVector& Impact, AActor* HitTak
 void ACharacterBase::DirectionalHitReact(const FVector& Impact)
 {
 	//Obtain vectors needed for dot product
-	const FVector EnemyForward = GetActorForwardVector();
+	const FVector ForwardVector = GetActorForwardVector();
 	//Creating vector for hit impact parallel to forward vector
 	const FVector ImpactVector(Impact.X, Impact.Y, GetActorLocation().Z);
 	//Ensure hit vector is normalised
 	const FVector HitVector = (Impact - GetActorLocation()).GetSafeNormal();
 
 	//Convert from cos(angle) to angle in degrees
-	const double CosHitAngle = FVector::DotProduct(EnemyForward, HitVector);
+	const double CosHitAngle = FVector::DotProduct(ForwardVector, HitVector);
 	double HitAngle = FMath::Acos(CosHitAngle);
 	HitAngle = FMath::RadiansToDegrees(HitAngle);
 
 	//Obtaining cross product to figure out if hit is from the left or right
-	const FVector HitCrossProduct = FVector::CrossProduct(EnemyForward, HitVector);
+	const FVector HitCrossProduct = FVector::CrossProduct(ForwardVector, HitVector);
 	//Adjust angle accordingly
 	if (HitCrossProduct.Z < 0)
 	{
